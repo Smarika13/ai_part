@@ -1,0 +1,122 @@
+ [
+    {
+        "id": 1,
+        "nepali_name": "घारियाल",
+        "english_name": "Gharial",
+        "scientific_name": "Gavialis gangeticus",
+        "category": "Crocodilian",
+        "habitat": "Large rivers (Narayani, Rapti)",
+        "conservation_status": "Critically Endangered (CR)",
+        "description": "Long-snouted river crocodile, fish-eater; important river ecosystem predator"
+    },
+    {
+        "id": 2,
+        "nepali_name": "मगर",
+        "english_name": "Mugger Crocodile",
+        "scientific_name": "Crocodylus palustris",
+        "category": "Crocodilian",
+        "habitat": "Rivers, oxbow lakes, wetlands",
+        "conservation_status": "Vulnerable (VU)",
+        "description": "Marsh/river crocodile common in wetlands and lakes"
+    },
+    {
+        "id": 3,
+        "nepali_name": "अजिंगर",
+        "english_name": "Indian Rock Python",
+        "scientific_name": "Python molurus",
+        "category": "Snake",
+        "habitat": "Forests, grassland edges",
+        "conservation_status": "Near Threatened (NT)",
+        "description": "Large non-venomous constrictor of mammals and birds"
+    },
+    {
+        "id": 4,
+        "nepali_name": "अजिंगर (भी ठूलो/भिन्न)",
+        "english_name": "Burmese Rock Python",
+        "scientific_name": "Python bivittatus",
+        "category": "Snake",
+        "habitat": "Forests near water",
+        "conservation_status": "Near Threatened (NT)",
+        "description": "Very large python often recorded in Terai wetlands and grasslands"
+    },
+    {
+        "id": 5,
+        "nepali_name": "कोब्रा (साँप)",
+        "english_name": "King Cobra",
+        "scientific_name": "Ophiophagus hannah",
+        "category": "Snake",
+        "habitat": "Forest & forest-edge",
+        "conservation_status": "Vulnerable (VU)",
+        "description": "World's longest venomous snake; preys mainly on other snakes"
+    },
+    {
+        "id": 6,
+        "nepali_name": "साँप (सामान्य)",
+        "english_name": "Common Krait",
+        "scientific_name": "Bungarus caeruleus",
+        "category": "Snake",
+        "habitat": "Grasslands, edges, near water",
+        "conservation_status": "Least Concern (LC)",
+        "description": "Highly venomous nocturnal snake"
+    },
+    {
+        "id": 7,
+        "nepali_name": "नाग (साँप)",
+        "english_name": "Yellow-striped/Water Snake (Keelback)",
+        "scientific_name": "Fowlea/Xenochrophis spp.",
+        "category": "Snake",
+        "habitat": "Wetland margins",
+        "conservation_status": "LC",
+        "description": "Semi-aquatic snake often seen near water"
+    },
+    {
+        "id": 8,
+        "nepali_name": "गोहिएको सर्प/बाँदर साँप",
+        "english_name": "Oriental Vine Snake",
+        "scientific_name": "Ahaetulla nasuta",
+        "category": "Snake",
+        "habitat": "Shrub/forest edge",
+        "conservation_status": "Least Concern",
+        "description": "Slender arboreal snake; mildly venomous"
+    },
+    {
+        "id": 9,
+        "nepali_name": "अजिंगर (घासमान)",
+        "english_name": "Indian Monitor Lizard",
+        "scientific_name": "Varanus bengalensis",
+        "category": "Lizard",
+        "habitat": "Grassland, forest edges",
+        "conservation_status": "Least Concern",
+        "description": "Large terrestrial lizard common in grasslands"
+    },
+    {
+        "id": 10,
+        "nepali_name": "कालो छेपारो",
+        "english_name": "Oriental Garden Lizard",
+        "scientific_name": "Calotes versicolor",
+        "category": "Lizard",
+        "habitat": "Forest edge, grassland",
+        "conservation_status": "Least Concern",
+        "description": "Diurnal agamid lizard often seen basking"
+    },
+    {
+        "id": 11,
+        "nepali_name": "चक्राकार कछुवा",
+        "english_name": "Indian Narrow-headed Softshell",
+        "scientific_name": "Chitra indica",
+        "category": "Turtle",
+        "habitat": "Large river systems",
+        "conservation_status": "Endangered (EN)",
+        "description": "Large softshell turtle in rivers; rare"
+    },
+    {
+        "id": 12,
+        "nepali_name": "नरम खोल कछुवा",
+        "english_name": "Indian Softshell Turtle",
+        "scientific_name": "Nilssonia gangetica",
+        "category": "Turtle",
+        "habitat": "Rivers & wetlands",
+        "conservation_status": "Vulnerable (VU)",
+        "description": "Freshwater softshell often buried in sand"
+    }
+]

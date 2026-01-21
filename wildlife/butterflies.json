@@ -1,0 +1,92 @@
+[
+    {
+        "id": 1,
+        "nepali_name": "किंग जि (local observers)*",
+        "english_name": "Tailed Jay",
+        "scientific_name": "Graphium agamemnon",
+        "category": "Papilionidae",
+        "habitat": "Forest edges, clearings",
+        "conservation_status": "Least Concern",
+        "description": "Fast-flying green-spotted 'jay' butterfly, common in lowland forests"
+    },
+    {
+        "id": 2,
+        "nepali_name": "मोरम (local)*",
+        "english_name": "Common Mormon",
+        "scientific_name": "Papilio polytes",
+        "category": "Papilionidae",
+        "habitat": "Gardens, forest edges",
+        "conservation_status": "Least Concern",
+        "description": "Widespread swallowtail with female forms mimicking toxic species"
+    },
+    {
+        "id": 3,
+        "nepali_name": "घाँसे पुतली",
+        "english_name": "Common Grass Yellow",
+        "scientific_name": "Eurema hecabe",
+        "category": "Pieridae",
+        "habitat": "Open grasslands & edges",
+        "conservation_status": "Least Concern",
+        "description": "Small yellow butterfly seen in open areas"
+    },
+    {
+        "id": 4,
+        "nepali_name": "लेमन एमिग्रान्ट*",
+        "english_name": "Lemon Emigrant",
+        "scientific_name": "Catopsilia pomona",
+        "category": "Pieridae",
+        "habitat": "Open areas & meadows",
+        "conservation_status": "Least Concern",
+        "description": "Migratory white/yellow butterfly frequent in lowland areas"
+    },
+    {
+        "id": 5,
+        "nepali_name": "प्लेन टाइगर",
+        "english_name": "Plain Tiger",
+        "scientific_name": "Danaus chrysippus",
+        "category": "Nymphalidae",
+        "habitat": "Open scrub & grassland",
+        "conservation_status": "Least Concern",
+        "description": "Bright orange and black milkweed butterfly abundant in park"
+    },
+    {
+        "id": 6,
+        "nepali_name": "सामान्य इभनिङ ब्राउन",
+        "english_name": "Common Evening Brown",
+        "scientific_name": "Melanitis leda",
+        "category": "Satyridae",
+        "habitat": "Forest floor & shaded areas",
+        "conservation_status": "Least Concern",
+        "description": "Brown butterfly often on ground in shade"
+    },
+    {
+        "id": 7,
+        "nepali_name": "कमन फाइभ-रिङ",
+        "english_name": "Common Five-ring",
+        "scientific_name": "Ypthima baldus",
+        "category": "Satyridae",
+        "habitat": "Grassland & forest edges",
+        "conservation_status": "Least Concern",
+        "description": "Small brown butterfly with ocelli/rings"
+    },
+    {
+        "id": 8,
+        "nepali_name": "सामान्य चार-रिङ",
+        "english_name": "Common Four-ring",
+        "scientific_name": "Ypthima huebneri",
+        "category": "Satyridae",
+        "habitat": "Grassland & forest edges",
+        "conservation_status": "Least Concern",
+        "description": "Similar to Y. baldus but with four rings"
+    },
+    {
+        "id": 9,
+        "nepali_name": "सिल्वर-स्ट्रिक्ड एकासिया ब्लु",
+        "english_name": "Silver-streaked Acacia Blue",
+        "scientific_name": "Cigaritis syama (formerly Zinaspa todara)",
+        "category": "Lycaenidae",
+        "habitat": "Forest edges near host plants",
+        "conservation_status": "Regionally rare",
+        "description": "Rediscovered after 51 years; very rare record for Nepal"
+    }
+]

@@ -1,0 +1,202 @@
+  [
+    {
+        "id": 1,
+        "nepali_name": "साल",
+        "english_name": "Sal",
+        "scientific_name": "Shorea robusta",
+        "type": "Tree",
+        "habitat": "Dominant moist deciduous forest",
+        "conservation_status": "Least Concern",
+        "description": "Main forest species covering ~70% of park area; important timber & ecological species"
+    },
+    {
+        "id": 2,
+        "nepali_name": "खैर",
+        "english_name": "Cutch Tree",
+        "scientific_name": "Acacia catechu",
+        "type": "Tree",
+        "habitat": "Riverine & dry forests",
+        "conservation_status": "LC",
+        "description": "Common tree in alluvial river plains; used for timber, tannin"
+    },
+    {
+        "id": 3,
+        "nepali_name": "सिरिस / सेतो सिरिस",
+        "english_name": "White Siris",
+        "scientific_name": "Albizia procera",
+        "type": "Tree",
+        "habitat": "Mixed forest & edges",
+        "conservation_status": "LC",
+        "description": "Fast-growing legume tree; good fodder & shade species"
+    },
+    {
+        "id": 4,
+        "nepali_name": "कटुवा",
+        "english_name": "Sissoo",
+        "scientific_name": "Dalbergia sissoo",
+        "type": "Tree",
+        "habitat": "Riverine forest",
+        "conservation_status": "LC",
+        "description": "Valuable timber tree common near rivers"
+    },
+    {
+        "id": 5,
+        "nepali_name": "बोम्बक्स / सिमल",
+        "english_name": "Silk Cotton Tree",
+        "scientific_name": "Bombax ceiba",
+        "type": "Tree",
+        "habitat": "Riverine & mixed forests",
+        "conservation_status": "LC",
+        "description": "Large tree with striking red blossoms; nectar source"
+    },
+    {
+        "id": 6,
+        "nepali_name": "बेल",
+        "english_name": "Wood Apple",
+        "scientific_name": "Aegle marmelos",
+        "type": "Tree",
+        "habitat": "Forest margins & riverbanks",
+        "conservation_status": "LC",
+        "description": "Fruit tree with medicinal roots; used in traditional medicine"
+    },
+    {
+        "id": 7,
+        "nepali_name": "चिउरी",
+        "english_name": "Chiuri",
+        "scientific_name": "Diploknema butyracea",
+        "type": "Tree",
+        "habitat": "Subtropical forests",
+        "conservation_status": "LC",
+        "description": "Multi-purpose tree with edible fruit & oil seeds"
+    },
+    {
+        "id": 8,
+        "nepali_name": "करम",
+        "english_name": "Yellow Teak",
+        "scientific_name": "Adina cordifolia",
+        "type": "Tree",
+        "habitat": "Moist deciduous forest",
+        "conservation_status": "LC",
+        "description": "Medium sized tree in mixed forest"
+    },
+    {
+        "id": 9,
+        "nepali_name": "दारुहल्दी (wild)",
+        "english_name": "Wild Turmeric",
+        "scientific_name": "Curcuma spp.",
+        "type": "Herb",
+        "habitat": "Understorey forest",
+        "conservation_status": "LC",
+        "description": "Medicinal herb with rhizomes"
+    },
+    {
+        "id": 10,
+        "nepali_name": "घाँसे / भुसको घाँस",
+        "english_name": "Elephant Grass",
+        "scientific_name": "Saccharum spontaneum",
+        "type": "Grass",
+        "habitat": "Floodplain grasslands",
+        "conservation_status": "LC",
+        "description": "Tall grass dominating floodplain phantas"
+    },
+    {
+        "id": 11,
+        "nepali_name": "इम्पेराटा",
+        "english_name": "Imperata Grass",
+        "scientific_name": "Imperata cylindrica",
+        "type": "Grass",
+        "habitat": "Short grasslands",
+        "conservation_status": "LC",
+        "description": "Common grass in open areas & degraded lands"
+    },
+    {
+        "id": 12,
+        "nepali_name": "फाँट घाँस",
+        "english_name": "Reed Grass",
+        "scientific_name": "Phragmites karka",
+        "type": "Grass",
+        "habitat": "Wetland edges",
+        "conservation_status": "LC",
+        "description": "Tall reed in marshy ground along rivers"
+    },
+    {
+        "id": 13,
+        "nepali_name": "खरजोङ",
+        "english_name": "Elephant Apple",
+        "scientific_name": "Dillenia indica",
+        "type": "Tree/Shrub",
+        "habitat": "Riverine forest",
+        "conservation_status": "LC",
+        "description": "Fruit eaten by elephants & herbivores"
+    },
+    {
+        "id": 14,
+        "nepali_name": "भीर गुल्मी",
+        "english_name": "Velvet Beautyberry",
+        "scientific_name": "Callicarpa macrophylla",
+        "type": "Shrub",
+        "habitat": "Understorey forest",
+        "conservation_status": "LC",
+        "description": "Shrub offering berries and shelter"
+    },
+    {
+        "id": 15,
+        "nepali_name": "फूलबुट्टा",
+        "english_name": "Hill Glory Bower",
+        "scientific_name": "Clerodendrum spp.",
+        "type": "Climber/Shrub",
+        "habitat": "Forest edges",
+        "conservation_status": "LC",
+        "description": "Flowering climber in forest edges"
+    },
+    {
+        "id": 16,
+        "nepali_name": "आमलकी",
+        "english_name": "Indian Gooseberry",
+        "scientific_name": "Phyllanthus emblica",
+        "type": "Shrub/Tree",
+        "habitat": "Mixed forests",
+        "conservation_status": "LC",
+        "description": "Medicinal fruit tree in forest understorey"
+    },
+    {
+        "id": 17,
+        "nepali_name": "आम्र",
+        "english_name": "Mango (wild/lower)",
+        "scientific_name": "Mangifera indica (wild)",
+        "type": "Tree",
+        "habitat": "Forest edges",
+        "conservation_status": "LC",
+        "description": "Wild/popular fruit tree around park margins"
+    },
+    {
+        "id": 18,
+        "nepali_name": "घाँस विविध",
+        "english_name": "Various Grasses",
+        "scientific_name": "Various spp.",
+        "type": "Grass",
+        "habitat": "Grassland types",
+        "conservation_status": "LC",
+        "description": "Includes many abundant grasses (50+ species)"
+    },
+    {
+        "id": 19,
+        "nepali_name": "सत्वा",
+        "english_name": "Common Herbs",
+        "scientific_name": "Curculigo orchioides",
+        "type": "Herb",
+        "habitat": "Forest understorey",
+        "conservation_status": "LC",
+        "description": "Traditional medicinal herb found in forest"
+    },
+    {
+        "id": 20,
+        "nepali_name": "शतावरी",
+        "english_name": "Asparagus",
+        "scientific_name": "Asparagus racemosus",
+        "type": "Climbers/Herb",
+        "habitat": "Forest edges",
+        "conservation_status": "LC",
+        "description": "Medicinal climber used in traditional medicine"
+    }
+]

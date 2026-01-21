@@ -1,0 +1,362 @@
+ [
+    {
+        "id": 1,
+        "nepali_name": "कालो सालक (Kalo Salak)",
+        "english_name": "Chinese Pangolin",
+        "scientific_name": "Manis pentadactyla",
+        "category": "Pholidota",
+        "habitat": "Hill forests, termite areas",
+        "conservation_status": "Critically Endangered",
+        "description": "Scaly anteater; nocturnal, burrowing; feeds on ants/termites."
+    },
+    {
+        "id": 2,
+        "nepali_name": "जंगल बिरालो (Jungle Biralo)",
+        "english_name": "Jungle Cat",
+        "scientific_name": "Felis chaus",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Grasslands, wetlands",
+        "conservation_status": "Least Concern",
+        "description": "Medium-sized cat; hunts rodents/birds near water."
+    },
+    {
+        "id": 3,
+        "nepali_name": "चरी बाघ (Chari Bagh)",
+        "english_name": "Leopard Cat",
+        "scientific_name": "Prionailurus bengalensis",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Forests, grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Small spotted cat; arboreal and terrestrial hunter."
+    },
+    {
+        "id": 4,
+        "nepali_name": "चितुवा (Chituwa)",
+        "english_name": "Common Leopard",
+        "scientific_name": "Panthera pardus",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Forests, hills",
+        "conservation_status": "Vulnerable",
+        "description": "Versatile predator; adaptable across habitats."
+    },
+    {
+        "id": 5,
+        "nepali_name": "ध्वाँसे चितुवा (Dhwanse Chituwa)",
+        "english_name": "Clouded Leopard",
+        "scientific_name": "Neofelis nebulosa",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Dense forests",
+        "conservation_status": "Vulnerable",
+        "description": "Arboreal big cat; rare, recorded historically."
+    },
+    {
+        "id": 6,
+        "nepali_name": "माछा बिरालो (Macha Biralo)",
+        "english_name": "Fishing Cat",
+        "scientific_name": "Prionailurus viverrinus",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Wetlands, rivers",
+        "conservation_status": "Vulnerable",
+        "description": "Specialized fish hunter; strongly associated with water."
+    },
+    {
+        "id": 7,
+        "nepali_name": "पाटे बाघ (Pate Bagh)",
+        "english_name": "Bengal Tiger",
+        "scientific_name": "Panthera tigris tigris",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Grasslands, riverine forests",
+        "conservation_status": "Endangered",
+        "description": "Apex predator; iconic species of CNP floodplains."
+    },
+    {
+        "id": 8,
+        "nepali_name": "बिरालो जस्तो बाघ (Biralo Jasto Bagh)",
+        "english_name": "Asiatic Wild Cat",
+        "scientific_name": "Felis lybica ornata",
+        "category": "Carnivora (Felidae)",
+        "habitat": "Open forests, scrub",
+        "conservation_status": "Least Concern",
+        "description": "Small wild felid; similar to domestic cat."
+    },
+    {
+        "id": 9,
+        "nepali_name": "स्याल जस्तो कुकुर (Syal Jasto Kukur) / बन कुकुर",
+        "english_name": "Dhole",
+        "scientific_name": "Cuon alpinus",
+        "category": "Carnivora (Canidae)",
+        "habitat": "Forests",
+        "conservation_status": "Endangered",
+        "description": "Pack-hunting wild dog; preys on deer."
+    },
+    {
+        "id": 10,
+        "nepali_name": "बङ्गाल फ्याउरो (Bangal Fyaauro)",
+        "english_name": "Bengal Fox",
+        "scientific_name": "Vulpes bengalensis",
+        "category": "Carnivora (Canidae)",
+        "habitat": "Grasslands, open areas",
+        "conservation_status": "Least Concern",
+        "description": "Small fox; nocturnal scavenger/hunter."
+    },
+    {
+        "id": 11,
+        "nepali_name": "स्याल (Syal)",
+        "english_name": "Golden Jackal",
+        "scientific_name": "Canis aureus",
+        "category": "Carnivora (Canidae)",
+        "habitat": "Grasslands, forests",
+        "conservation_status": "Least Concern",
+        "description": "Opportunistic omnivore; common scavenger."
+    },
+    {
+        "id": 12,
+        "nepali_name": "रातो भालु / मह चोर (Maha Chor)",
+        "english_name": "Honey Badger",
+        "scientific_name": "Mellivora capensis",
+        "category": "Carnivora (Mustelidae)",
+        "habitat": "Varied, forests/grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Fearless, digs for honey/prey; tough skin."
+    },
+    {
+        "id": 13,
+        "nepali_name": "पहेंलो घाँटी मार्टेन (Pahelo Ghanti Marten)",
+        "english_name": "Yellow-throated Marten",
+        "scientific_name": "Martes flavigula",
+        "category": "Carnivora (Mustelidae)",
+        "habitat": "Forests",
+        "conservation_status": "Least Concern",
+        "description": "Arboreal mustelid; hunts birds/small mammals."
+    },
+    {
+        "id": 14,
+        "nepali_name": "ठूलो निरबिरालो (Thulo Nirbiralo)",
+        "english_name": "Large Indian Civet",
+        "scientific_name": "Viverra zibetha",
+        "category": "Carnivora (Viverridae)",
+        "habitat": "Forests, near villages",
+        "conservation_status": "Least Concern",
+        "description": "Nocturnal; musk-producing; omnivorous."
+    },
+    {
+        "id": 15,
+        "nepali_name": "सानो निरबिरालो (Sano Nirbiralo)",
+        "english_name": "Small Indian Civet",
+        "scientific_name": "Viverricula indica",
+        "category": "Carnivora (Viverridae)",
+        "habitat": "Grasslands, scrub",
+        "conservation_status": "Least Concern",
+        "description": "Smaller civet; similar habits to large civet."
+    },
+    {
+        "id": 16,
+        "nepali_name": "मास्क्ड पाम सिवेट (Masked Palm Civet)",
+        "english_name": "Masked Palm Civet",
+        "scientific_name": "Paguma larvata",
+        "category": "Carnivora (Viverridae)",
+        "habitat": "Forests",
+        "conservation_status": "Least Concern",
+        "description": "Arboreal; fruit-eater with mask-like face."
+    },
+    {
+        "id": 17,
+        "nepali_name": "पाम सिवेट (Palm Civet)",
+        "english_name": "Common Palm Civet",
+        "scientific_name": "Paradoxurus hermaphroditus",
+        "category": "Carnivora (Viverridae)",
+        "habitat": "Forests, near human areas",
+        "conservation_status": "Least Concern",
+        "description": "Coffee bean processor in wild; nocturnal."
+    },
+    {
+        "id": 18,
+        "nepali_name": "ध्वाँसे न्याउरी मुसा (Dhwase Nyauri Musa)",
+        "english_name": "Indian Grey Mongoose",
+        "scientific_name": "Urva edwardsii",
+        "category": "Carnivora (Herpestidae)",
+        "habitat": "Open areas, forests",
+        "conservation_status": "Least Concern",
+        "description": "Snake fighter; diurnal."
+    },
+    {
+        "id": 19,
+        "nepali_name": "कर्कट भक्षी न्याउरी (Karkat Bhakshi Nyauri)",
+        "english_name": "Crab-eating Mongoose",
+        "scientific_name": "Urva urva",
+        "category": "Carnivora (Herpestidae)",
+        "habitat": "Near water",
+        "conservation_status": "Least Concern",
+        "description": "Aquatic prey specialist."
+    },
+    {
+        "id": 20,
+        "nepali_name": "धारीदार ब्वाँसो (Dharidar Bwanso)",
+        "english_name": "Striped Hyaena",
+        "scientific_name": "Hyaena hyaena",
+        "category": "Carnivora (Hyaenidae)",
+        "habitat": "Hills, open forests",
+        "conservation_status": "Near Threatened",
+        "description": "Scavenger; nocturnal with striped coat."
+    },
+    {
+        "id": 21,
+        "nepali_name": "अल्छे भालु / काठे भालु (Kathe Bhalu)",
+        "english_name": "Sloth Bear",
+        "scientific_name": "Melursus ursinus",
+        "category": "Carnivora (Ursidae)",
+        "habitat": "Forests, grasslands",
+        "conservation_status": "Vulnerable",
+        "description": "Insectivore; shaggy, termite specialist."
+    },
+    {
+        "id": 22,
+        "nepali_name": "जंगली हात्ती (Jangali Hatti)",
+        "english_name": "Asian Elephant",
+        "scientific_name": "Elephas maximus",
+        "category": "Proboscidea",
+        "habitat": "Riverine forests, grasslands",
+        "conservation_status": "Endangered",
+        "description": "Herd animal; key ecosystem engineer."
+    },
+    {
+        "id": 23,
+        "nepali_name": "जरायो (Jarayo)",
+        "english_name": "Sambar Deer",
+        "scientific_name": "Rusa unicolor",
+        "category": "Artiodactyla (Cervidae)",
+        "habitat": "Forests",
+        "conservation_status": "Vulnerable",
+        "description": "Large deer; prefers dense cover."
+    },
+    {
+        "id": 24,
+        "nepali_name": "चित्तल (Chittal)",
+        "english_name": "Spotted Deer (Chital)",
+        "scientific_name": "Axis axis",
+        "category": "Artiodactyla (Cervidae)",
+        "habitat": "Grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Gregarious; main tiger prey."
+    },
+    {
+        "id": 25,
+        "nepali_name": "रतुवा (Ratuwa)",
+        "english_name": "Barking Deer (Muntjac)",
+        "scientific_name": "Muntiacus vaginalis",
+        "category": "Artiodactyla (Cervidae)",
+        "habitat": "Forests",
+        "conservation_status": "Least Concern",
+        "description": "Small, solitary; distinctive bark."
+    },
+    {
+        "id": 26,
+        "nepali_name": "लगुना (Laguna)",
+        "english_name": "Hog Deer",
+        "scientific_name": "Axis porcinus",
+        "category": "Artiodactyla (Cervidae)",
+        "habitat": "Grasslands",
+        "conservation_status": "Endangered",
+        "description": "Short-legged; floodplain specialist."
+    },
+    {
+        "id": 27,
+        "nepali_name": "चौसिंगे (Chausinga)",
+        "english_name": "Four-horned Antelope",
+        "scientific_name": "Tetracerus quadricornis",
+        "category": "Artiodactyla (Bovidae)",
+        "habitat": "Hills, open forests",
+        "conservation_status": "Vulnerable",
+        "description": "Small antelope with four horns; rare in recent surveys."
+    },
+    {
+        "id": 28,
+        "nepali_name": "गौरीगाई (Gaurigai)",
+        "english_name": "Gaur",
+        "scientific_name": "Bos gaurus",
+        "category": "Artiodactyla (Bovidae)",
+        "habitat": "Forests",
+        "conservation_status": "Vulnerable",
+        "description": "Largest wild bovine; herd animal."
+    },
+    {
+        "id": 29,
+        "nepali_name": "नीलगाई (Nilgai)",
+        "english_name": "Blue Bull (Nilgai)",
+        "scientific_name": "Boselaphus tragocamelus",
+        "category": "Artiodactyla (Bovidae)",
+        "habitat": "Grasslands, near agriculture",
+        "conservation_status": "Least Concern",
+        "description": "Large antelope; sexually dimorphic (males blue-gray)."
+    },
+    {
+        "id": 30,
+        "nepali_name": "थार (Thar)",
+        "english_name": "Himalayan Serow",
+        "scientific_name": "Capricornis thar",
+        "category": "Artiodactyla (Bovidae)",
+        "habitat": "Hill forests",
+        "conservation_status": "Near Threatened",
+        "description": "Goat-like; steep terrain specialist."
+    },
+    {
+        "id": 31,
+        "nepali_name": "बँदेल (Bandel)",
+        "english_name": "Wild Boar",
+        "scientific_name": "Sus scrofa",
+        "category": "Artiodactyla (Suidae)",
+        "habitat": "Forests, grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Omnivorous; rooter, tiger prey."
+    },
+    {
+        "id": 32,
+        "nepali_name": "कालो लंगुर (Kalo Langur)",
+        "english_name": "Terai Grey Langur",
+        "scientific_name": "Semnopithecus hector",
+        "category": "Primates",
+        "habitat": "Forests",
+        "conservation_status": "Near Threatened",
+        "description": "Arboreal leaf-eater; troop-living."
+    },
+    {
+        "id": 33,
+        "nepali_name": "रातो बाँदर (Rato Bandar)",
+        "english_name": "Rhesus Macaque",
+        "scientific_name": "Macaca mulatta",
+        "category": "Primates",
+        "habitat": "Forests, near humans",
+        "conservation_status": "Least Concern",
+        "description": "Bold monkey; often in troops near settlements."
+    },
+    {
+        "id": 34,
+        "nepali_name": "एकसिंगे गैँडा (Eksinge Gaida)",
+        "english_name": "Greater One-horned Rhinoceros",
+        "scientific_name": "Rhinoceros unicornis",
+        "category": "Perissodactyla",
+        "habitat": "Grasslands, wetlands",
+        "conservation_status": "Vulnerable",
+        "description": "Iconic grazer; conservation success story."
+    },
+    {
+        "id": 35,
+        "nepali_name": "खरायो (Kharayo)",
+        "english_name": "Indian Hare",
+        "scientific_name": "Lepus nigricollis",
+        "category": "Lagomorpha",
+        "habitat": "Open grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Fast runner; nocturnal."
+    },
+    {
+        "id": 36,
+        "nepali_name": "दुम्सी (Dumsi)",
+        "english_name": "Indian Crested Porcupine",
+        "scientific_name": "Hystrix indica",
+        "category": "Rodentia",
+        "habitat": "Forests, hills",
+        "conservation_status": "Least Concern",
+        "description": "Large rodent; quill defense; nocturnal digger."
+    }
+]
