@@ -1,0 +1,503 @@
+[
+    {
+      "id": 1,
+      "nepaliName": "खरमुजुर (Kharamujur)",
+      "commonEnglishName": "Bengal Florican",
+      "scientificName": "Houbaropsis bengalensis",
+      "category": "Grassland bird",
+      "habitat": "Tall grassland",
+      "conservationStatus": "Critically Endangered",
+      "description": "Rare bustard of Terai grasslands"
+    },
+    {
+      "id": 2,
+      "nepaliName": "सानो खरमुजुर (Sano Kharamujur)",
+      "commonEnglishName": "Lesser Florican",
+      "scientificName": "Sypheotides indicus",
+      "category": "Grassland bird",
+      "habitat": "Tall grassland",
+      "conservationStatus": "Endangered",
+      "description": "Small bustard with jumping display"
+    },
+    {
+      "id": 3,
+      "nepaliName": "विशाल धनेश (Bihal Dhanesh)",
+      "commonEnglishName": "Great Hornbill",
+      "scientificName": "Buceros bicornis",
+      "category": "Forest bird",
+      "habitat": "Sal & riverine forest",
+      "conservationStatus": "Vulnerable",
+      "description": "Large hornbill with casque"
+    },
+    {
+      "id": 4,
+      "nepaliName": "मोर (Mor)",
+      "commonEnglishName": "Indian Peafowl",
+      "scientificName": "Pavo cristatus",
+      "category": "Forest bird",
+      "habitat": "Forest edge",
+      "conservationStatus": "Least Concern",
+      "description": "Large colorful ground bird"
+    },
+    {
+      "id": 5,
+      "nepaliName": "कालिज तीतर (Kalij Titar)",
+      "commonEnglishName": "Kalij Pheasant",
+      "scientificName": "Lophura leucomelanos",
+      "category": "Ground bird",
+      "habitat": "Forest floor",
+      "conservationStatus": "Least Concern",
+      "description": "Dark forest pheasant"
+    },
+    {
+      "id": 6,
+      "nepaliName": "रातो जङ्गली कुखुरा (Rato Jangali Kukkhura)",
+      "commonEnglishName": "Red Junglefowl",
+      "scientificName": "Gallus gallus",
+      "category": "Ground bird",
+      "habitat": "Forest & scrub",
+      "conservationStatus": "Least Concern",
+      "description": "Ancestor of domestic chicken"
+    },
+    {
+      "id": 7,
+      "nepaliName": "सेतो बकुल्ला (Seto Bakulla)",
+      "commonEnglishName": "Great Egret",
+      "scientificName": "Ardea alba",
+      "category": "Wetland bird",
+      "habitat": "Rivers, lakes",
+      "conservationStatus": "Least Concern",
+      "description": "Large white water bird"
+    },
+    {
+      "id": 8,
+      "nepaliName": "सानो बकुल्ला (Sano Bakulla)",
+      "commonEnglishName": "Little Egret",
+      "scientificName": "Egretta garzetta",
+      "category": "Wetland bird",
+      "habitat": "Wetlands",
+      "conservationStatus": "Least Concern",
+      "description": "Small elegant egret"
+    },
+    {
+      "id": 9,
+      "nepaliName": "सर्पचरा (Sarpachara)",
+      "commonEnglishName": "Oriental Darter",
+      "scientificName": "Anhinga melanogaster",
+      "category": "Wetland bird",
+      "habitat": "Rivers",
+      "conservationStatus": "Near Threatened",
+      "description": "Snake-necked diving bird"
+    },
+    {
+      "id": 10,
+      "nepaliName": "कालो घाँटी सारस (Kalo Ghanti Saras)",
+      "commonEnglishName": "Black-necked Stork",
+      "scientificName": "Ephippiorhynchus asiaticus",
+      "category": "Wetland bird",
+      "habitat": "Marsh & rivers",
+      "conservationStatus": "Near Threatened",
+      "description": "Tall stork with black neck"
+    },
+    {
+      "id": 11,
+      "nepaliName": "सानो सिठ्ठी हाँस (Sano Sitthi Hans)",
+      "commonEnglishName": "Lesser Whistling Duck",
+      "scientificName": "Dendrocygna javanica",
+      "category": "Waterfowl",
+      "habitat": "Wetlands",
+      "conservationStatus": "Least Concern",
+      "description": "Whistling sound in flight"
+    },
+    {
+      "id": 12,
+      "nepaliName": "धर्के टाउके हाँस (Dharke Tauke Hans)",
+      "commonEnglishName": "Bar-headed Goose",
+      "scientificName": "Anser indicus",
+      "category": "Waterfowl",
+      "habitat": "Rivers",
+      "conservationStatus": "Least Concern",
+      "description": "Migrates over Himalayas"
+    },
+    {
+      "id": 13,
+      "nepaliName": "रुडी हाँस (Rudi Hans)",
+      "commonEnglishName": "Ruddy Shelduck",
+      "scientificName": "Tadorna ferruginea",
+      "category": "Waterfowl",
+      "habitat": "Riverbanks",
+      "conservationStatus": "Least Concern",
+      "description": "Orange-brown duck"
+    },
+    {
+      "id": 14,
+      "nepaliName": "कपासे हाँस (Kapase Hans)",
+      "commonEnglishName": "Cotton Pygmy Goose",
+      "scientificName": "Nettapus coromandelianus",
+      "category": "Waterfowl",
+      "habitat": "Lakes",
+      "conservationStatus": "Least Concern",
+      "description": "Very small waterfowl"
+    },
+    {
+      "id": 15,
+      "nepaliName": "ठूलो राजा माछाचरा (Thulo Raja Machhachara)",
+      "commonEnglishName": "Stork-billed Kingfisher",
+      "scientificName": "Pelargopsis capensis",
+      "category": "Kingfisher",
+      "habitat": "Rivers",
+      "conservationStatus": "Least Concern",
+      "description": "Huge bill, loud calls"
+    },
+    {
+      "id": 16,
+      "nepaliName": "सेतो घाँटी राजा माछाचरा (Seto Ghanti Raja Machhachara)",
+      "commonEnglishName": "White-throated Kingfisher",
+      "scientificName": "Halcyon smyrnensis",
+      "category": "Kingfisher",
+      "habitat": "Wetlands",
+      "conservationStatus": "Least Concern",
+      "description": "Bright blue-brown bird"
+    },
+    {
+      "id": 17,
+      "nepaliName": "साधारण राजा माछाचरा (Sadharan Raja Machhachara)",
+      "commonEnglishName": "Common Kingfisher",
+      "scientificName": "Alcedo atthis",
+      "category": "Kingfisher",
+      "habitat": "Streams",
+      "conservationStatus": "Least Concern",
+      "description": "Small blue-orange bird"
+    },
+    {
+      "id": 18,
+      "nepaliName": "चिते राजा माछाचरा (Chite Raja Machhachara)",
+      "commonEnglishName": "Pied Kingfisher",
+      "scientificName": "Ceryle rudis",
+      "category": "Kingfisher",
+      "habitat": "Lakes",
+      "conservationStatus": "Least Concern",
+      "description": "Hovers before diving"
+    },
+    {
+      "id": 19,
+      "nepaliName": "नीलो घाँटी पिट्टा (Nilo Ghanti Pitta)",
+      "commonEnglishName": "Blue-throated Pitta",
+      "scientificName": "Hydrornis nipalensis",
+      "category": "Forest bird",
+      "habitat": "Dense forest",
+      "conservationStatus": "Vulnerable",
+      "description": "Colorful forest bird"
+    },
+    {
+      "id": 20,
+      "nepaliName": "स्वर्गीय चरा (Swargiya Chara)",
+      "commonEnglishName": "Indian Paradise Flycatcher",
+      "scientificName": "Terpsiphone paradisi",
+      "category": "Forest bird",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Long flowing tail"
+    },
+    {
+      "id": 21,
+      "nepaliName": "ठूलो कठफोडवा (Thulo Kathphorwa)",
+      "commonEnglishName": "Great Slaty Woodpecker",
+      "scientificName": "Mulleripicus pulverulentus",
+      "category": "Woodpecker",
+      "habitat": "Tall forest",
+      "conservationStatus": "Vulnerable",
+      "description": "Largest woodpecker"
+    },
+    {
+      "id": 22,
+      "nepaliName": "धारिलो घाँटी कठफोडवा (Dhari Ghanti Kathphorwa)",
+      "commonEnglishName": "Streak-throated Woodpecker",
+      "scientificName": "Picus xanthopygaeus",
+      "category": "Woodpecker",
+      "habitat": "Woodland",
+      "conservationStatus": "Least Concern",
+      "description": "Greenish woodpecker"
+    },
+    {
+      "id": 23,
+      "nepaliName": "रातो टाउके ट्रोगन (Rato Tauke Trogon)",
+      "commonEnglishName": "Red-headed Trogon",
+      "scientificName": "Harpactes erythrocephalus",
+      "category": "Forest bird",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Bright red-green bird"
+    },
+    {
+      "id": 24,
+      "nepaliName": "कालो बाज (Kalo Baja)",
+      "commonEnglishName": "Black Baza",
+      "scientificName": "Aviceda leuphotes",
+      "category": "Raptor",
+      "habitat": "Woodland",
+      "conservationStatus": "Least Concern",
+      "description": "Small crested hawk"
+    },
+    {
+      "id": 25,
+      "nepaliName": "माछा बाज (Machha Baja)",
+      "commonEnglishName": "Grey-headed Fish Eagle",
+      "scientificName": "Icthyophaga ichthyaetus",
+      "category": "Raptor",
+      "habitat": "Rivers",
+      "conservationStatus": "Near Threatened",
+      "description": "Fish-eating eagle"
+    },
+    {
+      "id": 26,
+      "nepaliName": "रूफस पेटे चील (Rufus Pete Cheel)",
+      "commonEnglishName": "Rufous-bellied Eagle",
+      "scientificName": "Lophotriorchis kienerii",
+      "category": "Raptor",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Medium-sized eagle"
+    },
+    {
+      "id": 27,
+      "nepaliName": "सानो गिद्ध (Sano Giddha)",
+      "commonEnglishName": "Lesser Adjutant Stork",
+      "scientificName": "Leptoptilos javanicus",
+      "category": "Wetland bird",
+      "habitat": "Marshland",
+      "conservationStatus": "Vulnerable",
+      "description": "Large bare-headed stork"
+    },
+    {
+      "id": 28,
+      "nepaliName": "चित्रे सारस (Chitre Saras)",
+      "commonEnglishName": "Painted Stork",
+      "scientificName": "Mycteria leucocephala",
+      "category": "Wetland bird",
+      "habitat": "Lakes",
+      "conservationStatus": "Near Threatened",
+      "description": "Pink-white stork"
+    },
+    {
+      "id": 29,
+      "nepaliName": "कालो पेटे टर्न (Kalo Pete Tern)",
+      "commonEnglishName": "Black-bellied Tern",
+      "scientificName": "Sterna acuticauda",
+      "category": "Water bird",
+      "habitat": "River islands",
+      "conservationStatus": "Endangered",
+      "description": "River-nesting tern"
+    },
+    {
+      "id": 30,
+      "nepaliName": "कालो चिल (Kalo Chil)",
+      "commonEnglishName": "Black Kite",
+      "scientificName": "Milvus migrans",
+      "category": "Raptor",
+      "habitat": "Open areas",
+      "conservationStatus": "Least Concern",
+      "description": "Common scavenger bird"
+    },
+    {
+      "id": 31,
+      "nepaliName": "दलदली तीतर (Daldali Titar)",
+      "commonEnglishName": "Swamp Francolin",
+      "scientificName": "Ortygornis gularis",
+      "category": "Grassland bird",
+      "habitat": "Tall grass",
+      "conservationStatus": "Vulnerable",
+      "description": "Secretive grassland bird"
+    },
+    {
+      "id": 32,
+      "nepaliName": "लामो खुट्टे जकाना (Lamo Khutte Jakana)",
+      "commonEnglishName": "Pheasant-tailed Jacana",
+      "scientificName": "Hydrophasianus chirurgus",
+      "category": "Wetland bird",
+      "habitat": "Marsh",
+      "conservationStatus": "Least Concern",
+      "description": "Walks on floating plants"
+    },
+    {
+      "id": 33,
+      "nepaliName": "काँसे जकाना (Kaanse Jakana)",
+      "commonEnglishName": "Bronze-winged Jacana",
+      "scientificName": "Metopidius indicus",
+      "category": "Wetland bird",
+      "habitat": "Swamps",
+      "conservationStatus": "Least Concern",
+      "description": "Metallic bronze wings"
+    },
+    {
+      "id": 34,
+      "nepaliName": "सारस (Saras)",
+      "commonEnglishName": "Sarus Crane",
+      "scientificName": "Antigone antigone",
+      "category": "Wetland bird",
+      "habitat": "Floodplains",
+      "conservationStatus": "Vulnerable",
+      "description": "Tallest flying bird"
+    },
+    {
+      "id": 35,
+      "nepaliName": "डेमोइसेल सारस (Demoiselle Saras)",
+      "commonEnglishName": "Demoiselle Crane",
+      "scientificName": "Anthropoides virgo",
+      "category": "Wetland bird",
+      "habitat": "Open plains",
+      "conservationStatus": "Least Concern",
+      "description": "Elegant migratory crane"
+    },
+    {
+      "id": 36,
+      "nepaliName": "कालो ड्रोंगो (Kalo Drongo)",
+      "commonEnglishName": "Black Drongo",
+      "scientificName": "Dicrurus macrocercus",
+      "category": "Passerine",
+      "habitat": "Open land",
+      "conservationStatus": "Least Concern",
+      "description": "Aggressive insect eater"
+    },
+    {
+      "id": 37,
+      "nepaliName": "जंगल मैना (Jungle Maina)",
+      "commonEnglishName": "Jungle Myna",
+      "scientificName": "Acridotheres fuscus",
+      "category": "Passerine",
+      "habitat": "Forest edge",
+      "conservationStatus": "Least Concern",
+      "description": "Noisy social bird"
+    },
+    {
+      "id": 38,
+      "nepaliName": "पहाडी मैना (Pahadi Maina)",
+      "commonEnglishName": "Common Hill Myna",
+      "scientificName": "Gracula religiosa",
+      "category": "Passerine",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Excellent mimic"
+    },
+    {
+      "id": 39,
+      "nepaliName": "छाती रातो बाबलर (Chhati Rato Babbler)",
+      "commonEnglishName": "Chestnut-capped Babbler",
+      "scientificName": "Timalia pileata",
+      "category": "Passerine",
+      "habitat": "Shrubs",
+      "conservationStatus": "Least Concern",
+      "description": "Small group bird"
+    },
+    {
+      "id": 40,
+      "nepaliName": "लामो चोचो बाबलर (Lamo Chocho Babbler)",
+      "commonEnglishName": "Slender-billed Babbler",
+      "scientificName": "Turdoides longirostris",
+      "category": "Grassland bird",
+      "habitat": "Grass scrub",
+      "conservationStatus": "Vulnerable",
+      "description": "Rare grassland bird"
+    },
+    {
+      "id": 41,
+      "nepaliName": "बालुवाको चरा (Baluwako Chara)",
+      "commonEnglishName": "Indian Sand Lark",
+      "scientificName": "Alaudala raytal",
+      "category": "Grassland bird",
+      "habitat": "Sandy rivers",
+      "conservationStatus": "Least Concern",
+      "description": "Small ground bird"
+    },
+    {
+      "id": 42,
+      "nepaliName": "कालो घाँटी बाबलर (Kalo Ghanti Babbler)",
+      "commonEnglishName": "Black-throated Babbler",
+      "scientificName": "Stachyris nigricollis",
+      "category": "Forest bird",
+      "habitat": "Dense forest",
+      "conservationStatus": "Least Concern",
+      "description": "Understory insect eater"
+    },
+    {
+      "id": 43,
+      "nepaliName": "कोइली (Koili)",
+      "commonEnglishName": "Common Hawk-Cuckoo",
+      "scientificName": "Hierococcyx varius",
+      "category": "Cuckoo",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Famous repetitive call"
+    },
+    {
+      "id": 44,
+      "nepaliName": "सेतो घाँटी फ्यान्टेल (Seto Ghanti Fantail)",
+      "commonEnglishName": "White-throated Fantail",
+      "scientificName": "Rhipidura albicollis",
+      "category": "Passerine",
+      "habitat": "Forest",
+      "conservationStatus": "Least Concern",
+      "description": "Constantly fanning tail"
+    },
+    {
+      "id": 45,
+      "nepaliName": "नीलो घाँटी बारबेट (Nilo Ghanti Barbet)",
+      "commonEnglishName": "Blue-throated Barbet",
+      "scientificName": "Psilopogon asiaticus",
+      "category": "Forest bird",
+      "habitat": "Trees",
+      "conservationStatus": "Least Concern",
+      "description": "Loud fruit-eater"
+    },
+    {
+      "id": 46,
+      "nepaliName": "भारतीय रोलर (Bharatiya Roller)",
+      "commonEnglishName": "Indian Roller",
+      "scientificName": "Coracias benghalensis",
+      "category": "Open land bird",
+      "habitat": "Grassland",
+      "conservationStatus": "Least Concern",
+      "description": "Bright blue flight display"
+    },
+    {
+      "id": 47,
+      "nepaliName": "चित्ते स्टार्लिङ (Chitte Starling)",
+      "commonEnglishName": "Spot-winged Starling",
+      "scientificName": "Saroglossa spilopterus",
+      "category": "Passerine",
+      "habitat": "Forest edge",
+      "conservationStatus": "Least Concern",
+      "description": "Black bird with white spots"
+    },
+    {
+      "id": 48,
+      "nepaliName": "घर भँगेरा (Ghar Bhagera)",
+      "commonEnglishName": "House Sparrow",
+      "scientificName": "Passer domesticus",
+      "category": "Passerine",
+      "habitat": "Settlements",
+      "conservationStatus": "Least Concern",
+      "description": "Common near humans"
+    },
+    {
+      "id": 49,
+      "nepaliName": "पहेंलो छाती बुन्टिङ (Pahenlo Chhati Bunting)",
+      "commonEnglishName": "Yellow-breasted Bunting",
+      "scientificName": "Emberiza aureola",
+      "category": "Grassland bird",
+      "habitat": "Grassland",
+      "conservationStatus": "Critically Endangered",
+      "description": "Rapidly declining migrant"
+    },
+    {
+      "id": 50,
+      "nepaliName": "सेतो छाती जलकाग (Seto Chhati Jalkag)",
+      "commonEnglishName": "White-breasted Waterhen",
+      "scientificName": "Amaurornis phoenicurus",
+      "category": "Wetland bird",
+      "habitat": "Marshes",
+      "conservationStatus": "Least Concern",
+      "description": "Common wetland rail"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "nepali_name": "चितवन भ्यागुता",
+        "english_name": "Chitwan Frog",
+        "scientific_name": "Hylarana chitwanensis",
+        "category": "Frog (Anura)",
+        "habitat": "Terai grasslands, forest edges",
+        "conservation_status": "Near Threatened",
+        "description": "Endemic lowland frog first described from Chitwan NP; threatened by habitat loss"
+    },
+    {
+        "id": 2,
+        "nepali_name": "मास्केको भ्यागुता",
+        "english_name": "Maskey's Frog",
+        "scientific_name": "Sphaerotheca maskeyi",
+        "category": "Frog (Anura)",
+        "habitat": "Moist lowland forest & grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Small frog of wetlands and grassland margins"
+    },
+    {
+        "id": 3,
+        "nepali_name": "Caecilian (सुरुङ्गो भ्यागुता)",
+        "english_name": "Sikkimese Caecilian",
+        "scientific_name": "Ichthyophis sikkimensis",
+        "category": "Caecilian (Gymnophiona)",
+        "habitat": "Moist soil, riparian forest",
+        "conservation_status": "Least Concern",
+        "description": "Legless amphibian burrowing in moist soils; regionally recorded near Chitwan"
+    },
+    {
+        "id": 4,
+        "nepali_name": "क्रिकेट भ्यागुता",
+        "english_name": "Cricket Frog (likely multiple spp.)",
+        "scientific_name": "Minervarya syhadrensis / related",
+        "category": "Frog (Anura)",
+        "habitat": "Near water bodies, grasslands",
+        "conservation_status": "Least Concern",
+        "description": "Small dicroglossid frogs common in Terai lowlands"
+    },
+    {
+        "id": 5,
+        "nepali_name": "सामान्य भ्यागुता",
+        "english_name": "(Generic) Tree Frog",
+        "scientific_name": "Polypedates/Chirixalus spp.",
+        "category": "Frog (Anura)",
+        "habitat": "Trees near ponds/wetlands",
+        "conservation_status": "Varies by species",
+        "description": "Includes tree frogs like Polypedates or reed frogs recorded in region"
+    },
+    {
+        "id": 6,
+        "nepali_name": "(अन्य सामान्य भिड)*",
+        "english_name": "Narrow-mouth frogs",
+        "scientific_name": "Microhyla spp.",
+        "category": "Frog (Anura)",
+        "habitat": "Grasslands & marsh edges",
+        "conservation_status": "Varies by species",
+        "description": "Small frogs of marshy and wet grassland habitats."
+    }
+]
