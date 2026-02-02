@@ -1,133 +1,405 @@
-"""
-RAG Service for Chitwan National Park Chatbot
-Handles document loading, embedding, and retrieval
-"""
-
 import os
+import json
 from pathlib import Path
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import DirectoryLoader, TextLoader, JSONLoader
-from dotenv import load_dotenv
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
+from langchain.schema import Document, HumanMessage, AIMessage  # ← ADDED: Import message types
+from langchain.prompts import PromptTemplate
 
-# Load .env from project root
-env_path = Path(__file__).parent.parent.parent / ".env"
-print(f"DEBUG: Looking for .env at: {env_path}")
-print(f"DEBUG: .env exists: {env_path.exists()}")
-load_dotenv(dotenv_path=env_path)
 
+# Import suggestion engine and emoji formatter
+import sys
+sys.path.append(str(Path(__file__).parent))
+from suggestion_engine import SuggestionEngine
+from emoji_formatter import EmojiFormatter
 
 
 class RAGService:
     def __init__(self):
         self.embeddings = None
-        self.vectorstore = None
-        self.data_dir = Path(__file__).parent.parent / "data" / "raw"
-        self.persist_dir = Path(__file__).parent.parent / "vector_store" / "chroma_db"
-        
+        self.llm = None
+        self.vector_db = None
+        self.qa_chain = None
+        self.memory = None  # ← ADDED: Conversation memory
+        self.suggestion_engine = SuggestionEngine()  # ← NEW: Suggestion engine
+        self.emoji_formatter = EmojiFormatter()  # ← NEW: Emoji formatter
+
+
     def initialize(self, rebuild_index=False):
-        """Initialize the RAG service and load/create vector store"""
-        print("\n🔧 Initializing RAG Service...")
+        """
+        Initialize the RAG service with FAISS vector store and conversation memory
+        Uses LOCAL embeddings (no API quota limits!)
+        Args:
+            rebuild_index: If True, rebuilds the FAISS index from scratch
+        """
+        print("🔧 Initializing RAG Service with FAISS and Conversation Memory...")
         
-        # Initialize embeddings
+        # 1. Get API Key (only for LLM, not embeddings)
         api_key = os.getenv("GOOGLE_API_KEY")
-        print(f"DEBUG: API key loaded: {api_key_check is not None}")
-        if api_key_check:
-            print(f"DEBUG: API key starts with: {api_key_check[:10]}...")
-
-
+        
+        print(f"🔍 Checking for API key...")
+        
         if not api_key:
-            raise ValueError("GOOGLE_API_KEY not found in environment variables")
+            print("❌ ERROR: GOOGLE_API_KEY not found in environment variables")
+            raise ValueError("GOOGLE_API_KEY not found. Please check your .env file.")
         
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-001",
-            google_api_key=api_key
-        )
-        print("✓ Embeddings model loaded")
-        
-        # Load or create vector store
-        if rebuild_index or not self.persist_dir.exists():
-            print("\n📚 Building new vector index...")
-            self._build_index()
-        else:
-            print("\n📂 Loading existing vector index...")
-            self._load_index()
-            
-    def _build_index(self):
-        """Build vector index from data directory"""
-        documents = self._load_documents()
-        
-        if not documents:
-            raise ValueError(f"No documents found in {self.data_dir}")
-        
-        print(f"✓ Loaded {len(documents)} documents")
-        
-        # Split documents into chunks
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len,
-        )
-        chunks = text_splitter.split_documents(documents)
-        print(f"✓ Split into {len(chunks)} chunks")
-        
-        # Create vector store
-        print("🔄 Creating embeddings and storing in ChromaDB...")
-        self.vectorstore = Chroma.from_documents(
-            documents=chunks,
-            embedding=self.embeddings,
-            persist_directory=str(self.persist_dir)
-        )
-        print("✓ Vector store created and persisted")
-        
-    def _load_index(self):
-        """Load existing vector index"""
-        self.vectorstore = Chroma(
-            persist_directory=str(self.persist_dir),
-            embedding_function=self.embeddings
-        )
-        print("✓ Vector store loaded")
-        
-    def _load_documents(self):
-        """Load documents from data directory"""
-        documents = []
-        
-        # Load text files
-        txt_files = list(self.data_dir.rglob("*.txt"))
-        for txt_file in txt_files:
+        print(f"✅ API key loaded (starts with: {api_key[:10]}...)")
+
+
+        # 2. Initialize LOCAL embeddings (runs on your computer, no API calls!)
+        print("🤖 Initializing LOCAL embeddings (sentence-transformers)...")
+        print("   This runs on your computer - no API quota limits!")
+        try:
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name="all-MiniLM-L6-v2",
+                model_kwargs={'device': 'cpu'},
+                encode_kwargs={'normalize_embeddings': True}
+            )
+            print("✅ Local embeddings initialized successfully (no quota limits!)")
+        except Exception as e:
+            print(f"❌ Error initializing embeddings: {e}")
+            raise
+
+
+        # 3. Initialize Google Gemini LLM (only for chat responses)
+        print("🤖 Initializing Google Gemini LLM for chat responses...")
+        try:
+            self.llm = ChatGoogleGenerativeAI(
+                model="gemini-flash-latest",
+                temperature=0.1,
+                google_api_key=api_key
+            )
+            print("✅ Gemini LLM initialized successfully")
+        except Exception as e:
+            print(f"❌ Error initializing LLM: {e}")
+            raise
+
+
+        # 4. Setup paths
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        wildlife_dir = base_dir / "wildlife"
+        raw_data_dir = base_dir / "app" / "data" / "raw"
+        vector_store_dir = base_dir / "vector_store"
+        index_path = vector_store_dir / "faiss_index"
+
+
+        print(f"📂 Base directory: {base_dir}")
+        print(f"📂 Wildlife directory: {wildlife_dir}")
+        print(f"📂 Raw data directory: {raw_data_dir}")
+        print(f"📂 FAISS index path: {index_path}")
+
+
+        # 5. Load or Build FAISS Index
+        if not rebuild_index and index_path.exists():
+            print("📁 Loading existing FAISS index...")
             try:
-                loader = TextLoader(str(txt_file))
-                documents.extend(loader.load())
-                print(f"✓ Loaded {txt_file.name}")
-            except Exception as e:
-                print(f"⚠ Warning loading {txt_file.name}: {e}")
-        
-        # Load JSON files
-        json_files = list(self.data_dir.rglob("*.json"))
-        for json_file in json_files:
-            try:
-                # Basic JSON loader - adjust jq_schema based on your JSON structure
-                loader = JSONLoader(
-                    file_path=str(json_file),
-                    jq_schema='.[]',
-                    text_content=False
+                self.vector_db = FAISS.load_local(
+                    str(index_path),
+                    self.embeddings,
+                    allow_dangerous_deserialization=True
                 )
-                documents.extend(loader.load())
-                print(f"✓ Loaded {json_file.name}")
+                print(f"✅ Loaded FAISS index with {self.vector_db.index.ntotal} vectors")
             except Exception as e:
-                print(f"⚠ Warning loading {json_file.name}: {e}")
+                print(f"⚠️ Error loading index: {e}")
+                print("🔄 Rebuilding index from scratch...")
+                rebuild_index = True
+
+
+        if rebuild_index or not self.vector_db:
+            print("🏗️ Building new FAISS index from source data...")
+            documents = self._load_all_documents(wildlife_dir, raw_data_dir)
+            
+            if not documents:
+                raise ValueError("⚠️ No documents found! Check your wildlife and raw data folders.")
+
+
+            # Split documents into chunks
+            print(f"📄 Splitting {len(documents)} documents into chunks...")
+            splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=100,
+                length_function=len
+            )
+            final_docs = splitter.split_documents(documents)
+            print(f"✂️ Created {len(final_docs)} document chunks")
+            
+            # Create FAISS index (using LOCAL embeddings - no API calls!)
+            print("🔨 Creating FAISS vector store with local embeddings...")
+            print("   (This happens on your computer, no quota limits!)")
+            self.vector_db = FAISS.from_documents(final_docs, self.embeddings)
+            
+            # Save the index
+            vector_store_dir.mkdir(parents=True, exist_ok=True)
+            self.vector_db.save_local(str(index_path))
+            print(f"💾 FAISS index saved to {index_path}")
+            print(f"✅ Index contains {self.vector_db.index.ntotal} vectors")
+
+
+        # 6. Initialize Conversation Memory ← NEW!
+        print("🧠 Initializing conversation memory...")
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True,
+            output_key="answer"
+        )
+        print("✅ Conversation memory initialized")
+
+
+        # 7. Build the Conversational QA Chain ← UPDATED!
+        print("🔗 Building Conversational QA Chain...")
         
+        self.qa_chain = ConversationalRetrievalChain.from_llm(
+            llm=self.llm,
+            retriever=self.vector_db.as_retriever(
+                search_type="similarity",
+                search_kwargs={"k": 5}
+            ),
+            memory=self.memory,
+            return_source_documents=True,
+            verbose=False,
+            # You can add a custom combine_docs_chain_kwargs if needed
+            combine_docs_chain_kwargs={
+                "prompt": PromptTemplate(
+                    template="""Use the following context to answer the question. The context contains information about wildlife in Chitwan National Park including birds, mammals, reptiles, and park information.
+
+Context:
+{context}
+
+Chat History:
+{chat_history}
+
+Question: {question}
+
+Answer the question based on the context above. Be specific and include relevant details like scientific names, Nepali names, conservation status, and habitat information when available. If you're listing species, provide clear information about each one.
+
+Answer:""",
+                    input_variables=["context", "chat_history", "question"]
+                )
+            }
+        )
+        print("✅ RAG Service Initialized Successfully with Conversation Memory!")
+
+
+    def _load_all_documents(self, wildlife_dir: Path, raw_data_dir: Path) -> list:
+        """Load all documents from wildlife JSONs and raw data files"""
+        documents = []
+
+
+        # A. Process JSON files in the 'wildlife' folder
+        if wildlife_dir.exists():
+            print(f"📚 Loading wildlife JSONs from {wildlife_dir}...")
+            json_count = 0
+            for json_file in wildlife_dir.glob("*.json"):
+                try:
+                    with open(json_file, "r", encoding="utf-8-sig") as f:  # ← UPDATED encoding
+                        data = json.load(f)
+                        species_list = data if isinstance(data, list) else [data]
+                        
+                        for species in species_list:
+                            # Create searchable content from JSON
+                            content = f"Category: {json_file.stem}\n{json.dumps(species, indent=2)}"
+                            documents.append(Document(
+                                page_content=content,
+                                metadata={
+                                    "source": json_file.name,
+                                    "category": json_file.stem,
+                                    "type": "wildlife"
+                                }
+                            ))
+                    json_count += 1
+                    print(f"   ✅ Loaded {json_file.name}")
+                except json.JSONDecodeError as e:
+                    print(f"   ⚠️ Skipping {json_file.name}: Invalid JSON - {e}")
+                except Exception as e:
+                    print(f"   ⚠️ Error reading {json_file.name}: {e}")
+            print(f"✅ Successfully loaded {json_count} wildlife JSON files")
+        else:
+            print(f"⚠️ Wildlife directory not found: {wildlife_dir}")
+
+
+        # B. Process text files in app/data/raw
+        if raw_data_dir.exists():
+            print(f"📚 Loading text files from {raw_data_dir}...")
+            try:
+                loader = DirectoryLoader(
+                    str(raw_data_dir),
+                    glob="*.txt",
+                    loader_cls=TextLoader,
+                    loader_kwargs={"encoding": "utf-8"}
+                )
+                txt_docs = loader.load()
+                documents.extend(txt_docs)
+                print(f"✅ Loaded {len(txt_docs)} text files")
+            except Exception as e:
+                print(f"⚠️ Error loading text files: {e}")
+            
+            # C. Load activities.json if it exists
+            activity_file = raw_data_dir / "activities.json"
+            if activity_file.exists():
+                try:
+                    with open(activity_file, "r", encoding="utf-8-sig") as f:  # ← UPDATED encoding
+                        data = json.load(f)
+                        # Only add if file is not empty
+                        if data:
+                            documents.append(Document(
+                                page_content=json.dumps(data, indent=2),
+                                metadata={
+                                    "source": "activities.json",
+                                    "type": "activities"
+                                }
+                            ))
+                            print("✅ Loaded activities.json")
+                        else:
+                            print("⚠️ activities.json is empty, skipping")
+                except json.JSONDecodeError as e:
+                    print(f"⚠️ Skipping activities.json: Invalid JSON - {e}")
+                except Exception as e:
+                    print(f"⚠️ Error loading activities.json: {e}")
+        else:
+            print(f"⚠️ Raw data directory not found: {raw_data_dir}")
+
+
+        print(f"\n📊 Total documents loaded: {len(documents)}")
         return documents
-    
-    def get_retriever(self, k=4):
-        """Get retriever for querying the vector store"""
-        if not self.vectorstore:
-            raise ValueError("Vector store not initialized. Call initialize() first.")
-        return self.vectorstore.as_retriever(search_kwargs={"k": k})
-    
-    def search(self, query, k=4):
-        """Search for relevant documents"""
-        if not self.vectorstore:
-            raise ValueError("Vector store not initialized. Call initialize() first.")
-        return self.vectorstore.similarity_search(query, k=k)
+
+
+    def query(self, message: str, include_suggestions: bool = True, use_emojis: bool = True) -> dict:
+        """
+        Query the RAG system with conversation memory, smart suggestions, and emoji formatting
+        Args:
+            message: User query string
+            include_suggestions: Whether to include follow-up suggestions
+            use_emojis: Whether to format response with emojis
+        Returns:
+            dict with 'answer', 'sources', and 'suggestions' keys
+        """
+        if not self.qa_chain:
+            return {
+                "answer": "RAG system is not initialized. Please call initialize() first.",
+                "sources": [],
+                "suggestions": []
+            }
+        
+        try:
+            # ✨ CRITICAL FIX: Clear the memory before this query to prevent double-adding
+            # The qa_chain will add messages automatically, so we need to intercept
+            
+            # Save current memory state
+            current_history = self.memory.chat_memory.messages.copy()
+            
+            # Use 'question' key for ConversationalRetrievalChain
+            result = self.qa_chain.invoke({"question": message})
+            
+            # Get the raw answer
+            raw_answer = result["answer"]
+            
+            # Format answer with emojis if enabled
+            formatted_answer = self.emoji_formatter.format_response(raw_answer) if use_emojis else raw_answer
+            
+            # Extract unique sources
+            sources = list(set([
+                doc.metadata.get("source", "Knowledge Base")
+                for doc in result.get("source_documents", [])
+            ]))
+            
+            # Generate smart suggestions
+            suggestions = []
+            if include_suggestions:
+                suggestions = self.suggestion_engine.get_suggestions(
+                    user_query=message,
+                    bot_response=raw_answer
+                )
+            
+            # ✨ NEW: Build the complete assistant message with suggestions
+            complete_answer = formatted_answer
+            
+            if suggestions:
+                complete_answer += "\n\n💡 **You might also want to know:**"
+                for i, suggestion in enumerate(suggestions, 1):
+                    complete_answer += f"\n{i}. {suggestion}"
+            
+            # ✨ CRITICAL FIX: Update the last assistant message in memory with suggestions
+            # The qa_chain already added the user message and assistant response
+            # We need to replace the assistant's message with our complete version
+            
+            if len(self.memory.chat_memory.messages) >= 2:
+                # Remove the last assistant message that was auto-added
+                self.memory.chat_memory.messages.pop()
+                
+                # Add our complete message with suggestions
+                self.memory.chat_memory.add_message(AIMessage(content=complete_answer))
+            
+            return {
+                "answer": complete_answer,  # ← Return the complete answer with suggestions
+                "sources": sources,
+                "suggestions": suggestions  # ← Still return suggestions separately for UI
+            }
+            
+        except Exception as e:
+            print(f"❌ Query error: {e}")
+            return {
+                "answer": f"Error processing query: {str(e)}",
+                "sources": [],
+                "suggestions": []
+            }
+
+
+    def clear_memory(self):
+        """Clear conversation history - start a new conversation"""
+        if self.memory:
+            self.memory.clear()
+            print("🧹 Conversation memory cleared - starting fresh!")
+        else:
+            print("⚠️ Memory not initialized")
+
+
+    def get_chat_history(self) -> list:
+        """Get current chat history"""
+        if self.memory:
+            history = self.memory.load_memory_variables({}).get("chat_history", [])
+            return history
+        return []
+
+
+    def add_documents(self, documents: list):
+        """
+        Add new documents to the existing FAISS index
+        Args:
+            documents: List of Document objects to add
+        """
+        if not self.vector_db:
+            raise ValueError("Vector store not initialized")
+        
+        print(f"➕ Adding {len(documents)} documents to FAISS index...")
+        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+        split_docs = splitter.split_documents(documents)
+        
+        self.vector_db.add_documents(split_docs)
+        
+        # Save updated index
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        index_path = base_dir / "vector_store" / "faiss_index"
+        self.vector_db.save_local(str(index_path))
+        print(f"✅ Added documents. Index now contains {self.vector_db.index.ntotal} vectors")
+
+
+    def get_stats(self) -> dict:
+        """Get statistics about the FAISS index and conversation"""
+        if not self.vector_db:
+            return {"status": "not_initialized"}
+        
+        chat_history = self.get_chat_history()
+        
+        return {
+            "status": "initialized",
+            "total_vectors": self.vector_db.index.ntotal,
+            "embedding_dimension": self.vector_db.index.d,
+            "embedding_model": "all-MiniLM-L6-v2 (local)",
+            "conversation_turns": len(chat_history),
+            "memory_enabled": self.memory is not None
+        }
