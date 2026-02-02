@@ -1,31 +1,87 @@
-from fastapi import APIRouter, HTTPException
-from app.services.schemas import ChatRequest, ChatResponse
-from app.services.rag_service import RAGService
-import uuid
+from fastapi import APIRouter, Request, HTTPException
+from pydantic import BaseModel
+from typing import List, Optional
 
 router = APIRouter()
-rag_service = RAGService()
 
-# Initialize the RAG system when the server starts
-@router.on_event("startup")
-async def startup_event():
-    print("System Starting...")
-    rag_service.initialize(rebuild_index=False)
-    print("System Ready!")
+class ChatRequest(BaseModel):
+    query: str
+    include_suggestions: Optional[bool] = True  # ← NEW: Optional flag for suggestions
+    use_emojis: Optional[bool] = True  # ← NEW: Optional flag for emojis
+
+class ChatResponse(BaseModel):
+    answer: str
+    sources: list
+    suggestions: Optional[List[str]] = []  # ← NEW: Add suggestions to response
+
+class ClearMemoryResponse(BaseModel):
+    message: str
+    status: str
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: Request, chat_request: ChatRequest):
+    """
+    Chat endpoint with smart suggestions and emoji formatting
+    """
     try:
-        # Generate a new session ID if none exists
-        session_id = request.session_id or str(uuid.uuid4())
+        rag_service = request.app.state.rag_service
         
-        # Get answer from RAG service
-        result = rag_service.query(request.message)
-        
+        # Query with suggestions and emoji support
+        result = rag_service.query(
+            chat_request.query, 
+            include_suggestions=chat_request.include_suggestions,
+            use_emojis=chat_request.use_emojis
+        )
+
         return ChatResponse(
-            response=result["answer"],
-            session_id=session_id,
-            sources=result.get("sources", [])
+            answer=result["answer"],
+            sources=result["sources"],
+            suggestions=result.get("suggestions", [])  # ← NEW: Include suggestions
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.post("/clear-memory")
+async def clear_memory(request: Request):
+    """
+    Clear conversation memory - start a new conversation
+    """
+    try:
+        rag_service = request.app.state.rag_service
+        rag_service.clear_memory()
+        
+        return ClearMemoryResponse(
+            message="Conversation memory cleared successfully",
+            status="success"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/chat-history")
+async def get_chat_history(request: Request):
+    """
+    Get current conversation history
+    """
+    try:
+        rag_service = request.app.state.rag_service
+        history = rag_service.get_chat_history()
+        
+        return {
+            "conversation_turns": len(history),
+            "history": [
+                {
+                    "role": msg.type if hasattr(msg, 'type') else 'unknown',
+                    "content": msg.content if hasattr(msg, 'content') else str(msg)
+                }
+                for msg in history
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/status")
+async def status(request: Request):
+    """
+    Get RAG service statistics
+    """
+    return request.app.state.rag_service.get_stats()
