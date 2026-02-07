@@ -1,50 +1,71 @@
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
+import logging
+
+# Set up logging for professional tracking
+logger = logging.getLogger("ChatbotRouter")
 
 router = APIRouter()
 
+# --- Request/Response Models ---
+
 class ChatRequest(BaseModel):
     query: str
-    include_suggestions: Optional[bool] = True  # ← NEW: Optional flag for suggestions
-    use_emojis: Optional[bool] = True  # ← NEW: Optional flag for emojis
+    include_suggestions: Optional[bool] = True
+    use_emojis: Optional[bool] = True
 
 class ChatResponse(BaseModel):
     answer: str
-    sources: list
-    suggestions: Optional[List[str]] = []  # ← NEW: Add suggestions to response
+    sources: List[str]  # Explicitly defined as List of Strings
+    suggestions: List[str] = [] # Defaults to empty list to prevent Flutter null errors
 
 class ClearMemoryResponse(BaseModel):
     message: str
     status: str
 
+# --- Endpoints ---
+
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: Request, chat_request: ChatRequest):
     """
-    Chat endpoint with smart suggestions and emoji formatting
+    Main Chat endpoint. Returns Markdown-formatted answers, 
+    source citations, and clickable suggestion chips.
     """
     try:
+        # Access the globally initialized RAG service from main.py
         rag_service = request.app.state.rag_service
         
-        # Query with suggestions and emoji support
+        # 1. Execute the query via RAG Service
+        # Ensure your rag_service.query returns a dictionary with these keys
         result = rag_service.query(
             chat_request.query, 
             include_suggestions=chat_request.include_suggestions,
             use_emojis=chat_request.use_emojis
         )
 
-        return ChatResponse(
-            answer=result["answer"],
-            sources=result["sources"],
-            suggestions=result.get("suggestions", [])  # ← NEW: Include suggestions
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        # 2. Extract and sanitize data
+        # We use .get() with defaults to prevent KeyErrors
+        answer = result.get("answer", "I'm sorry, I couldn't find an answer for that. 🐯")
+        sources = result.get("sources", [])
+        suggestions = result.get("suggestions", [])
 
-@router.post("/clear-memory")
+        # 3. Return the structured response
+        return ChatResponse(
+            answer=answer,
+            sources=[str(s) for s in sources], # Ensure all sources are strings
+            suggestions=[str(s) for s in suggestions] # Ensure all suggestions are strings
+        )
+
+    except Exception as e:
+        logger.error(f"Chat Error: {str(e)}")
+        # Return a 500 error that the Flutter App's try-catch will handle
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+@router.post("/clear-memory", response_model=ClearMemoryResponse)
 async def clear_memory(request: Request):
     """
-    Clear conversation memory - start a new conversation
+    Clears the conversation buffer for the current session.
     """
     try:
         rag_service = request.app.state.rag_service
@@ -55,33 +76,15 @@ async def clear_memory(request: Request):
             status="success"
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
-@router.get("/chat-history")
-async def get_chat_history(request: Request):
-    """
-    Get current conversation history
-    """
-    try:
-        rag_service = request.app.state.rag_service
-        history = rag_service.get_chat_history()
-        
-        return {
-            "conversation_turns": len(history),
-            "history": [
-                {
-                    "role": msg.type if hasattr(msg, 'type') else 'unknown',
-                    "content": msg.content if hasattr(msg, 'content') else str(msg)
-                }
-                for msg in history
-            ]
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        logger.error(f"Memory Clear Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to clear memory")
 
 @router.get("/status")
-async def status(request: Request):
+async def get_status(request: Request):
     """
-    Get RAG service statistics
+    Returns the current health and statistics of the RAG engine.
     """
-    return request.app.state.rag_service.get_stats()
+    try:
+        return request.app.state.rag_service.get_stats()
+    except Exception:
+        return {"status": "error", "message": "Service stats unavailable"}
