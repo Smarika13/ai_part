@@ -1,53 +1,78 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from dotenv import load_dotenv
+from pathlib import Path
 import os
+import logging
+from dotenv import load_dotenv
 
+# --- 1. ENVIRONMENT & LOGGING SETUP ---
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("CNP-Chatbot")
+
+BASE_DIR = Path(__file__).resolve().parent
+env_path = BASE_DIR / '.env'
+
+# Keep your helpful debugging prints
+print("\n" + "="*60)
+print("🔍 ENVIRONMENT DEBUGGING")
+print("="*60)
+
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+    print("✅ .env file loaded successfully")
+else:
+    print(f"❌ .env file NOT FOUND at: {env_path}")
+
+api_key = os.getenv("GOOGLE_API_KEY")
+print(f"🔑 GOOGLE_API_KEY found: {api_key is not None}")
+print("="*60 + "\n")
+
+# Now import your logic files
 from app.api import chatbot
 from app.services.rag_service import RAGService
 
-# Load environment variables from .env
-load_dotenv()
-
-# Initialize RAG service globally (do not call initialize yet)
+# Initialize RAG service instance
 rag_service = RAGService()
 
+# --- 2. LIFESPAN MANAGEMENT ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Lifespan context manager for startup and shutdown
+    Handles initialization and cleanup. 
+    This is the modern way to manage shared resources.
     """
-    # Startup
-    print("🚀 Starting up Chitwan National Park Chatbot API...")
-
-    # Determine whether to rebuild index from env
-    rebuild = os.getenv("REBUILD_INDEX", "false").lower() == "true"
+    logger.info("🚀 Starting up Chitwan National Park Chatbot API...")
+    
+    # Check for API Key inside lifespan to prevent silent failures
+    if not os.getenv("GOOGLE_API_KEY"):
+        logger.error("❌ CRITICAL: GOOGLE_API_KEY still not found!")
+        raise ValueError("Missing GOOGLE_API_KEY")
 
     # Initialize RAG service
+    rebuild = os.getenv("REBUILD_INDEX", "false").lower() == "true"
     try:
         rag_service.initialize(rebuild_index=rebuild)
-        # Store in app state for routers
+        # Store in state so chatbot.py can access it via request.app.state
         app.state.rag_service = rag_service
-        print("✅ RAG Service initialized successfully")
+        logger.info("✅ RAG Service initialized and attached to app state")
     except Exception as e:
-        print(f"❌ Failed to initialize RAG Service: {e}")
+        logger.error(f"❌ Failed to initialize RAG Service: {e}")
         raise
 
-    yield  # Application is running
+    yield  # --- API is running ---
 
-    # Shutdown
-    print("🛑 Shutting down Chitwan National Park Chatbot API...")
+    logger.info("🛑 Shutting down API...")
 
-# Create FastAPI app with lifespan
+# --- 3. APP CONFIGURATION ---
 app = FastAPI(
     title="Chitwan National Park Chatbot API",
-    description="AI-powered chatbot for wildlife information and park activities",
+    description="AI-powered chatbot for wildlife information",
     version="1.0.0",
     lifespan=lifespan
 )
 
-# CORS middleware (allow all origins for development)
+# CORS: Allows the Flutter app to connect without being blocked
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -56,38 +81,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routers
+# Include API router (prefix matches your Flutter baseUrl)
 app.include_router(chatbot.router, prefix="/api/v1", tags=["chatbot"])
 
-# Root endpoint
+# --- 4. ENDPOINTS ---
+
 @app.get("/", tags=["root"])
 async def root():
     return {
         "message": "Chitwan National Park Chatbot API is Live! 🐯",
-        "version": "1.0.0",
         "status": "running"
     }
 
-# Health check endpoint
-@app.get("/health", tags=["health"])
-async def health_check():
-    rag_stats = getattr(app.state, "rag_service", None)
-    stats = rag_stats.get_stats() if rag_stats else {}
+@app.get("/api/v1/health", tags=["health"])
+async def health_check_v1():
+    """Matches the exact path used by Flutter ChatbotService.checkHealth()"""
+    is_ready = hasattr(app.state, "rag_service")
     return {
-        "status": "healthy" if rag_stats else "rag_service not initialized",
-        "rag_service": stats
+        "status": "healthy" if is_ready else "initializing",
+        "version": "1.0.0"
     }
 
-# Run with uvicorn when executed directly
+# --- 5. EXECUTION ---
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
-    host = os.getenv("HOST", "0.0.0.0")
 
-    uvicorn.run(
-        "main:app",
-        host=host,
-        port=port,
-        reload=True,
-        log_level="info"
-    )
+    
+    # Binding to 0.0.0.0 is essential for mobile device/emulator access
+    uvicorn.run("main:app",
+                 host="0.0.0.0",
+                 port=8000,
+                 reload=True)
+    
