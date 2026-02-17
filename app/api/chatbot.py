@@ -12,13 +12,14 @@ router = APIRouter()
 
 class ChatRequest(BaseModel):
     query: str
+    response_type: Optional[str] = "normal"  # ✨ NEW: "short" or "normal"
     include_suggestions: Optional[bool] = True
     use_emojis: Optional[bool] = True
 
 class ChatResponse(BaseModel):
     answer: str
     sources: List[str]  # Explicitly defined as List of Strings
-    suggestions: List[str] = [] # Defaults to empty list to prevent Flutter null errors
+    suggestions: List[str] = []  # Defaults to empty list to prevent Flutter null errors
 
 class ClearMemoryResponse(BaseModel):
     message: str
@@ -31,35 +32,37 @@ async def chat(request: Request, chat_request: ChatRequest):
     """
     Main Chat endpoint. Returns Markdown-formatted answers, 
     source citations, and clickable suggestion chips.
+    
+    NEW: Supports response_type parameter:
+    - "short": 2-3 sentence responses
+    - "normal": Detailed responses (default)
     """
     try:
         # Access the globally initialized RAG service from main.py
         rag_service = request.app.state.rag_service
         
-        # 1. Execute the query via RAG Service
-        # Ensure your rag_service.query returns a dictionary with these keys
+        # ✨ UPDATED: Pass response_type to RAG service
         result = rag_service.query(
-            chat_request.query, 
+            message=chat_request.query,
+            response_type=chat_request.response_type,  # ✨ NEW
             include_suggestions=chat_request.include_suggestions,
             use_emojis=chat_request.use_emojis
         )
 
-        # 2. Extract and sanitize data
-        # We use .get() with defaults to prevent KeyErrors
+        # Extract and sanitize data
         answer = result.get("answer", "I'm sorry, I couldn't find an answer for that. 🐯")
         sources = result.get("sources", [])
         suggestions = result.get("suggestions", [])
 
-        # 3. Return the structured response
+        # ✅ Return clean response with suggestions as separate list
         return ChatResponse(
-            answer=answer,
-            sources=[str(s) for s in sources], # Ensure all sources are strings
-            suggestions=[str(s) for s in suggestions] # Ensure all suggestions are strings
+            answer=answer,  # Clean answer WITHOUT suggestion text
+            sources=[str(s) for s in sources],
+            suggestions=[str(s) for s in suggestions]  # Suggestions as list
         )
 
     except Exception as e:
         logger.error(f"Chat Error: {str(e)}")
-        # Return a 500 error that the Flutter App's try-catch will handle
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @router.post("/clear-memory", response_model=ClearMemoryResponse)

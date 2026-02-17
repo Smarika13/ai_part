@@ -10,12 +10,6 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.schema import Document, HumanMessage, AIMessage
 from langchain.prompts import PromptTemplate
-import re
-
-#Import for GPU detection and FAISS optimization
-import torch
-import numpy as np
-import faiss
 
 # Import suggestion engine and emoji formatter
 import sys
@@ -34,16 +28,14 @@ class RAGService:
         self.suggestion_engine = SuggestionEngine()
         self.emoji_formatter = EmojiFormatter()
 
-
     def initialize(self, rebuild_index=False):
         """
         Initialize the RAG service with FAISS vector store and conversation memory
         Uses LOCAL embeddings (no API quota limits!)
-        OPTIMIZED: GPU support + HNSW index for faster performance
         Args:
             rebuild_index: If True, rebuilds the FAISS index from scratch
         """
-        print("🔧 Initializing OPTIMIZED RAG Service with FAISS and Conversation Memory...")
+        print("🔧 Initializing RAG Service with FAISS and Conversation Memory...")
         
         # 1. Get API Key (only for LLM, not embeddings)
         api_key = os.getenv("GOOGLE_API_KEY")
@@ -56,47 +48,33 @@ class RAGService:
         
         print(f"✅ API key loaded (starts with: {api_key[:10]}...)")
 
-
-        # 2. ✨ OPTIMIZED: Initialize LOCAL embeddings with GPU support
+        # 2. Initialize LOCAL embeddings (runs on your computer, no API calls!)
         print("🤖 Initializing LOCAL embeddings (sentence-transformers)...")
-        print("   Checking for GPU acceleration...")
-        
-        # ✨ Check if GPU is available
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        print(f"   Using device: {device.upper()}")
-        
+        print("   This runs on your computer - no API quota limits!")
         try:
             self.embeddings = HuggingFaceEmbeddings(
                 model_name="all-MiniLM-L6-v2",
-                model_kwargs={'device': device},  
+                model_kwargs={'device': 'cpu'},
                 encode_kwargs={'normalize_embeddings': True}
             )
-            if device == 'cuda':
-                print("✅ GPU acceleration enabled! Embeddings will be 5-10x faster 🚀")
-            else:
-                print("✅ Local embeddings initialized (CPU mode - no quota limits!)")
+            print("✅ Local embeddings initialized successfully (no quota limits!)")
         except Exception as e:
             print(f"❌ Error initializing embeddings: {e}")
             raise
 
-
-        # 3. ✅ FIXED: Initialize Google Gemini LLM with timeout settings to prevent freezing
+        # 3. Initialize Google Gemini LLM (only for chat responses)
         print("🤖 Initializing Google Gemini LLM for chat responses...")
         try:
             self.llm = ChatGoogleGenerativeAI(
                 model="gemini-flash-latest",
-                temperature=0.3,
+                temperature=0.2,  # Lower for more focused responses
                 google_api_key=api_key,
-                streaming=True,
-                timeout=20,  #  Request timeout in seconds (prevents hanging)
-                max_retries=1,  #  Retry failed requests
-                request_timeout=20  #  Alternative timeout parameter for compatibility
+                max_output_tokens=150  # Limit output length
             )
-            print("✅ Gemini LLM initialized successfully (with 30s timeout protection)")
+            print("✅ Gemini LLM initialized successfully")
         except Exception as e:
             print(f"❌ Error initializing LLM: {e}")
             raise
-
 
         # 4. Setup paths
         base_dir = Path(__file__).resolve().parent.parent.parent
@@ -105,14 +83,12 @@ class RAGService:
         vector_store_dir = base_dir / "vector_store"
         index_path = vector_store_dir / "faiss_index"
 
-
         print(f"📂 Base directory: {base_dir}")
         print(f"📂 Wildlife directory: {wildlife_dir}")
         print(f"📂 Raw data directory: {raw_data_dir}")
         print(f"📂 FAISS index path: {index_path}")
 
-
-        # 5. ✨ OPTIMIZED: Load or Build FAISS Index with HNSW
+        # 5. Load or Build FAISS Index
         if not rebuild_index and index_path.exists():
             print("📁 Loading existing FAISS index...")
             try:
@@ -122,17 +98,10 @@ class RAGService:
                     allow_dangerous_deserialization=True
                 )
                 print(f"✅ Loaded FAISS index with {self.vector_db.index.ntotal} vectors")
-                
-                # ✨ OPTIMIZED: Configure HNSW search if available
-                if hasattr(self.vector_db.index, 'hnsw'):
-                    self.vector_db.index.hnsw.efSearch = 16
-                    print("   ⚡ HNSW search optimized for speed (2-5x faster)")
-                    
             except Exception as e:
                 print(f"⚠️ Error loading index: {e}")
                 print("🔄 Rebuilding index from scratch...")
                 rebuild_index = True
-
 
         if rebuild_index or not self.vector_db:
             print("🏗️ Building new FAISS index from source data...")
@@ -141,57 +110,26 @@ class RAGService:
             if not documents:
                 raise ValueError("⚠️ No documents found! Check your wildlife and raw data folders.")
 
-
             # Split documents into chunks
             print(f"📄 Splitting {len(documents)} documents into chunks...")
             splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1000,
+                chunk_size=800,  # Smaller chunks for more focused retrieval
                 chunk_overlap=100,
                 length_function=len
             )
             final_docs = splitter.split_documents(documents)
             print(f"✂️ Created {len(final_docs)} document chunks")
             
-            # ✨ OPTIMIZED: Create FAISS index with HNSW for faster search
-            print("🔨 Creating FAISS vector store with HNSW (faster search)...")
+            # Create FAISS index (using LOCAL embeddings - no API calls!)
+            print("🔨 Creating FAISS vector store with local embeddings...")
             print("   (This happens on your computer, no quota limits!)")
-            
-            # First create normal FAISS to get the structure
             self.vector_db = FAISS.from_documents(final_docs, self.embeddings)
-            
-            # ✨ OPTIMIZED: Upgrade to HNSW index for 2-5x faster search
-            try:
-                dimension = 384  # MiniLM embedding size
-                
-                # Create HNSW index
-                # M=32: number of connections (16-64 range, 32 is good balance)
-                # efConstruction=40: quality during build (higher = better but slower build)
-                hnsw_index = faiss.IndexHNSWFlat(dimension, 32)
-                hnsw_index.hnsw.efConstruction = 40
-                hnsw_index.hnsw.efSearch = 16  
-                
-                # Get all document texts and create embeddings
-                all_texts = [doc.page_content for doc in final_docs]
-                print(f"   🔧 Creating HNSW index for {len(all_texts)} chunks...")
-                all_embeddings = self.embeddings.embed_documents(all_texts)
-                
-                # Add embeddings to HNSW index
-                hnsw_index.add(np.array(all_embeddings).astype('float32'))
-                
-                # Replace the default flat index with optimized HNSW
-                self.vector_db.index = hnsw_index
-                
-                print("   ✅ HNSW index created (2-5x faster retrieval) 🚀")
-            except Exception as e:
-                print(f"   ⚠️ Could not create HNSW index: {e}")
-                print("   ℹ️ Using standard FAISS index (still works, just slightly slower)")
             
             # Save the index
             vector_store_dir.mkdir(parents=True, exist_ok=True)
             self.vector_db.save_local(str(index_path))
             print(f"💾 FAISS index saved to {index_path}")
             print(f"✅ Index contains {self.vector_db.index.ntotal} vectors")
-
 
         # 6. Initialize Conversation Memory
         print("🧠 Initializing conversation memory...")
@@ -202,45 +140,44 @@ class RAGService:
         )
         print("✅ Conversation memory initialized")
 
-
-        # 7. Build the Conversational QA Chain with IMPROVED PROMPT
-        print("🔗 Building Conversational QA Chain with natural language prompts...")
-        
-        # ✨ CRITICAL: This prompt prevents bullet points and robotic responses
-        conversational_prompt = PromptTemplate(
-    template="""You are a friendly Chitwan Park wildlife guide. Answer naturally in 2-4 sentences. Use conversational paragraphs, not bullet points unless comparing multiple items.
-
-Context: {context}
-Previous chat: {chat_history}
-Question: {question}
-
-Answer:""",
-    input_variables=["context", "chat_history", "question"]
-)
+        # 7. Build the Conversational QA Chain
+        print("🔗 Building Conversational QA Chain...")
         
         self.qa_chain = ConversationalRetrievalChain.from_llm(
             llm=self.llm,
             retriever=self.vector_db.as_retriever(
                 search_type="similarity",
-                search_kwargs={"k": 2,
-                "fetch_k": 8
-                 } 
+                search_kwargs={"k": 2}  # Reduced to 2 for more focused context
             ),
             memory=self.memory,
             return_source_documents=True,
             verbose=False,
             combine_docs_chain_kwargs={
-                "prompt": conversational_prompt
+                "prompt": PromptTemplate(
+                    template="""You're a friendly Chitwan park guide. Answer briefly and naturally.
+
+Context: {context}
+
+Question: {question}
+
+Rules:
+- Keep it short (2-3 sentences max)
+- Sound conversational like texting a friend
+- Only give detailed answers if asked or if the question needs it
+- No bullet points unless listing multiple things
+- No "based on context" phrases
+- Start with the answer directly
+
+Answer:""",
+                    input_variables=["context", "question"]
+                )
             }
         )
-        
-       
-
+        print("✅ RAG Service Initialized Successfully with Conversation Memory!")
 
     def _load_all_documents(self, wildlife_dir: Path, raw_data_dir: Path) -> list:
         """Load all documents from wildlife JSONs and raw data files"""
         documents = []
-
 
         # A. Process JSON files in the 'wildlife' folder
         if wildlife_dir.exists():
@@ -253,8 +190,9 @@ Answer:""",
                         species_list = data if isinstance(data, list) else [data]
                         
                         for species in species_list:
-                            # ✨ NEW: Create more natural content from JSON
-                            content = self._format_species_naturally(species, json_file.stem)
+                            # ✅ Convert JSON to conversational text
+                            content = self._format_species_conversationally(species, json_file.stem)
+                            
                             documents.append(Document(
                                 page_content=content,
                                 metadata={
@@ -272,7 +210,6 @@ Answer:""",
             print(f"✅ Successfully loaded {json_count} wildlife JSON files")
         else:
             print(f"⚠️ Wildlife directory not found: {wildlife_dir}")
-
 
         # B. Process text files in app/data/raw
         if raw_data_dir.exists():
@@ -314,96 +251,75 @@ Answer:""",
         else:
             print(f"⚠️ Raw data directory not found: {raw_data_dir}")
 
-
         print(f"\n📊 Total documents loaded: {len(documents)}")
         return documents
 
-
-    def _format_species_naturally(self, species: dict, category: str) -> str:
+    def _format_species_conversationally(self, species: dict, category: str) -> str:
         """
-        ✨ NEW: Convert JSON species data into natural language paragraphs
-        This helps the LLM respond more naturally instead of copying JSON structure
+        Convert structured JSON into natural conversational text
+        This prevents the LLM from copying table-like formats
         """
         parts = []
         
-        # Start with category
-        parts.append(f"Category: {category}")
+        # Start with the name
+        english_name = species.get("english_name", species.get("name", "Unknown species"))
+        parts.append(f"The {english_name}")
         
-        # Add species name naturally
-        if "english_name" in species:
-            name_parts = [species["english_name"]]
-            if "nepali_name" in species:
-                name_parts.append(f"known as {species['nepali_name']} in Nepali")
-            if "scientific_name" in species:
-                name_parts.append(f"(scientific name: {species['scientific_name']})")
-            parts.append(" ".join(name_parts))
+        # Add scientific name if available
+        if "scientific_name" in species:
+            parts.append(f"(scientific name: {species['scientific_name']})")
         
-        # Add conservation status naturally
+        # Add Nepali name if available
+        if "nepali_name" in species:
+            parts.append(f"is called '{species['nepali_name']}' in Nepali.")
+        else:
+            parts.append(".")
+        
+        # Add conservation status
         if "conservation_status" in species:
-            status = species["conservation_status"]
-            parts.append(f"This species is classified as {status}")
-            
-            if "population_trend" in species:
-                parts.append(f"with a {species['population_trend']} population trend")
+            parts.append(f"This species is classified as {species['conservation_status']}.")
         
-        # Add habitat information
+        # Add habitat info
         if "habitat" in species:
-            habitats = species["habitat"]
-            if isinstance(habitats, list):
-                parts.append(f"Found in: {', '.join(habitats)}")
-            else:
-                parts.append(f"Found in: {habitats}")
+            habitat = species["habitat"]
+            if isinstance(habitat, list):
+                habitat = ", ".join(habitat)
+            parts.append(f"It lives in {habitat}.")
         
-        # Add description
-        if "description" in species:
-            parts.append(f"Description: {species['description']}")
+        # Add physical description
+        if "physical_description" in species:
+            parts.append(f"Physical features: {species['physical_description']}")
+        
+        # Add behavior
+        if "behavior" in species:
+            parts.append(f"Behavior: {species['behavior']}")
+        
+        # Add diet
+        if "diet" in species:
+            diet = species["diet"]
+            if isinstance(diet, list):
+                diet = ", ".join(diet)
+            parts.append(f"It feeds on {diet}.")
         
         # Add interesting facts
         if "interesting_facts" in species:
             facts = species["interesting_facts"]
             if isinstance(facts, list):
-                parts.append(f"Interesting facts: {' '.join(facts)}")
+                for fact in facts:
+                    parts.append(fact)
             else:
-                parts.append(f"Interesting fact: {facts}")
+                parts.append(facts)
         
-        # Join everything into natural paragraphs
-        return ". ".join(parts) + "."
+        # Add category at the end
+        parts.append(f"This is a {category} species found in Chitwan National Park.")
+        
+        return " ".join(parts)
 
-
-    def _post_process_response(self, text: str) -> str:
-        
-              # Remove bullet point markers but keep the content
-        text = re.sub(r'^\s*[•\-\*]\s+', '', text, flags=re.MULTILINE)
-        
-        # Remove numbered list markers (1. 2. 3.) for single-item responses
-        lines = text.split('\n')
-        if len([l for l in lines if re.match(r'^\s*\d+\.', l)]) <= 1:
-            text = re.sub(r'^\s*\d+\.\s+', '', text, flags=re.MULTILINE)
-        
-        # Remove common robotic prefixes
-        robotic_prefixes = [
-            "Based on the context provided,",
-            "According to the information,",
-            "Based on the information provided,",
-            "Here is the information:",
-            "Here are the details:",
-        ]
-        for prefix in robotic_prefixes:
-            text = text.replace(prefix, "")
-        
-        # Clean up extra whitespace
-        text = re.sub(r'\n{3,}', '\n\n', text)
-        text = text.strip()
-        
-        return text
-
-
-    def query(self, message: str, response_type: str = "normal", include_suggestions: bool = True, use_emojis: bool = True) -> dict:
+    def query(self, message: str, include_suggestions: bool = True, use_emojis: bool = True) -> dict:
         """
         Query the RAG system with conversation memory, smart suggestions, and emoji formatting
         Args:
             message: User query string
-            response_type: "short" or "normal" (controls response length)
             include_suggestions: Whether to include follow-up suggestions
             use_emojis: Whether to format response with emojis
         Returns:
@@ -417,58 +333,20 @@ Answer:""",
             }
         
         try:
-            # ✨ NEW: Modify the question based on response_type
-            if response_type == "short":
-                modified_message = f"Answer briefly in 2-3 sentences maximum: {message}"
-            else:
-                modified_message = message
-            
-            print(f"🔍 Processing query: {modified_message[:50]}...")
-            
-            # ✅ FIXED: Add timeout protection to the invoke call
             # Use 'question' key for ConversationalRetrievalChain
-            try:
-                result = self.qa_chain.invoke(
-                    {"question": modified_message},
-                    config={"timeout": 25}  # ✅ Slightly less than LLM timeout
-                )
-            except TimeoutError:
-                print("⏰ Query timed out after 25 seconds")
-                return {
-                    "answer": "Sorry, the response took too long. Please try a simpler question or try again.",
-                    "sources": [],
-                    "suggestions": []
-                }
-            except Exception as invoke_error:
-                print(f"❌ Invoke error: {invoke_error}")
-                # Try to provide a graceful fallback
-                return {
-                    "answer": f"I encountered an issue processing your question: {str(invoke_error)[:100]}. Please try rephrasing or ask something else.",
-                    "sources": [],
-                    "suggestions": []
-                }
+            result = self.qa_chain.invoke({"question": message})
             
             # Get the raw answer
-            raw_answer = result.get("answer", "No response generated")
-            print(f"✅ Got response ({len(raw_answer)} chars)")
+            raw_answer = result["answer"]
             
-            # ✨ Post-process to remove any remaining bullet points
-            cleaned_answer = self._post_process_response(raw_answer)
-            
-            # ✨ CRITICAL: For short responses, truncate if needed
-            if response_type == "short" and len(cleaned_answer) > 300:
-                # Find the last complete sentence within 300 chars
-                sentences = cleaned_answer.split('. ')
-                truncated = sentences[0]
-                for sentence in sentences[1:]:
-                    if len(truncated + '. ' + sentence) <= 300:
-                        truncated += '. ' + sentence
-                    else:
-                        break
-                cleaned_answer = truncated + '.' if not truncated.endswith('.') else truncated
+            # Remove robotic phrases
+            raw_answer = raw_answer.replace("Based on the provided context, ", "")
+            raw_answer = raw_answer.replace("Based on the context, ", "")
+            raw_answer = raw_answer.replace("According to the context, ", "")
+            raw_answer = raw_answer.replace("Based on the information provided, ", "")
             
             # Format answer with emojis if enabled
-            formatted_answer = self.emoji_formatter.format_response(cleaned_answer) if use_emojis else cleaned_answer
+            formatted_answer = self.emoji_formatter.format_response(raw_answer) if use_emojis else raw_answer
             
             # Extract unique sources
             sources = list(set([
@@ -476,49 +354,43 @@ Answer:""",
                 for doc in result.get("source_documents", [])
             ]))
             
-            # ✨ Generate smart suggestions (but DON'T add them to answer text)
+            # Generate smart suggestions
             suggestions = []
             if include_suggestions:
-                try:
-                    suggestions = self.suggestion_engine.get_raw_suggestions(
-                        user_query=message,
-                        bot_response=cleaned_answer
-                    )
-                except Exception as sug_error:
-                    print(f"⚠️ Suggestion generation failed: {sug_error}")
-                    suggestions = []
+                suggestions = self.suggestion_engine.get_suggestions(
+                    user_query=message,
+                    bot_response=raw_answer
+                )
             
-            # ✅ FIXED: Return answer WITHOUT suggestions in the text
-            # Suggestions will be returned separately as a list
+            # Build the complete assistant message with suggestions
             complete_answer = formatted_answer
             
-            # ✅ FIXED: Safer memory update with error handling
-            try:
-                if len(self.memory.chat_memory.messages) >= 2:
-                    # Remove the last assistant message that was auto-added
-                    self.memory.chat_memory.messages.pop()
-                    
-                    # Add our answer WITHOUT suggestions to memory
-                    self.memory.chat_memory.add_message(AIMessage(content=formatted_answer))
-            except Exception as mem_error:
-                print(f"⚠️ Memory update failed (non-critical): {mem_error}")
+            if suggestions:
+                complete_answer += "\n\n💡 **You might also want to know:**"
+                for i, suggestion in enumerate(suggestions, 1):
+                    complete_answer += f"\n{i}. {suggestion}"
+            
+            # Update the last assistant message in memory with suggestions
+            if len(self.memory.chat_memory.messages) >= 2:
+                # Remove the last assistant message that was auto-added
+                self.memory.chat_memory.messages.pop()
+                
+                # Add our complete message with suggestions
+                self.memory.chat_memory.add_message(AIMessage(content=complete_answer))
             
             return {
-                "answer": complete_answer,  # ✅ Clean answer without suggestions
+                "answer": complete_answer,
                 "sources": sources,
-                "suggestions": suggestions  # ✅ Suggestions as separate list
+                "suggestions": suggestions
             }
             
         except Exception as e:
             print(f"❌ Query error: {e}")
-            import traceback
-            traceback.print_exc()  # ✅ Print full traceback for debugging
             return {
-                "answer": f"Error processing query: {str(e)[:200]}",
+                "answer": f"Error processing query: {str(e)}",
                 "sources": [],
                 "suggestions": []
             }
-
 
     def clear_memory(self):
         """Clear conversation history - start a new conversation"""
@@ -528,14 +400,12 @@ Answer:""",
         else:
             print("⚠️ Memory not initialized")
 
-
     def get_chat_history(self) -> list:
         """Get current chat history"""
         if self.memory:
             history = self.memory.load_memory_variables({}).get("chat_history", [])
             return history
         return []
-
 
     def add_documents(self, documents: list):
         """
@@ -547,7 +417,7 @@ Answer:""",
             raise ValueError("Vector store not initialized")
         
         print(f"➕ Adding {len(documents)} documents to FAISS index...")
-        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+        splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
         split_docs = splitter.split_documents(documents)
         
         self.vector_db.add_documents(split_docs)
@@ -558,7 +428,6 @@ Answer:""",
         self.vector_db.save_local(str(index_path))
         print(f"✅ Added documents. Index now contains {self.vector_db.index.ntotal} vectors")
 
-
     def get_stats(self) -> dict:
         """Get statistics about the FAISS index and conversation"""
         if not self.vector_db:
@@ -566,24 +435,11 @@ Answer:""",
         
         chat_history = self.get_chat_history()
         
-        # ✨ OPTIMIZED: Add device info to stats
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        index_type = "HNSW" if hasattr(self.vector_db.index, 'hnsw') else "Flat"
-        
         return {
             "status": "initialized",
             "total_vectors": self.vector_db.index.ntotal,
             "embedding_dimension": self.vector_db.index.d,
             "embedding_model": "all-MiniLM-L6-v2 (local)",
-            "embedding_device": device.upper(),  # ✨ NEW
-            "index_type": index_type,  # ✨ NEW
-            "retrieval_k": 3,  # ✨ NEW
             "conversation_turns": len(chat_history),
-            "memory_enabled": self.memory is not None,
-            "optimizations": {  # ✨ NEW
-                "gpu_embeddings": device == 'cuda',
-                "hnsw_search": index_type == "HNSW",
-                "minimal_k": True,
-                "timeout_protection": True  # ✅ NEW
-            }
+            "memory_enabled": self.memory is not None
         }

@@ -175,7 +175,7 @@ class SuggestionEngine:
             conversation_history: Previous conversation turns
             
         Returns:
-            List of 3-4 relevant follow-up questions
+            List of 3 relevant follow-up questions
         """
         suggestions = []
         user_query_lower = user_query.lower()
@@ -189,12 +189,26 @@ class SuggestionEngine:
         # 2. Remove duplicates while preserving order
         suggestions = list(dict.fromkeys(suggestions))
         
-        # 3. If we have suggestions, return top 4
+        # 3. If we have suggestions, return top 3 (reduced from 4)
         if suggestions:
-            return suggestions[:4]
+            return suggestions[:3]
         
         # 4. If no specific matches, use default suggestions
-        return self.default_suggestions[:4]
+        return self.default_suggestions[:3]
+
+    def get_raw_suggestions(self, user_query: str, bot_response: str) -> List[str]:
+        """
+        Get suggestions as a raw list without any formatting
+        Perfect for sending to Flutter frontend
+        
+        Args:
+            user_query: The user's question
+            bot_response: The bot's answer
+            
+        Returns:
+            List of 3 suggestion strings (no formatting)
+        """
+        return self.get_suggestions(user_query, bot_response)[:3]
 
     def get_contextual_suggestions(self, detected_entities: Dict[str, List[str]]) -> List[str]:
         """
@@ -220,7 +234,7 @@ class SuggestionEngine:
             suggestions.append(f"What's the best time for {activity}?")
             suggestions.append(f"How long is the {activity}?")
         
-        return suggestions[:4]
+        return suggestions[:3]
 
     def get_smart_followups(self, user_query: str, bot_response: str) -> List[str]:
         """
@@ -255,14 +269,16 @@ class SuggestionEngine:
             suggestions.append("What's the daily schedule for activities?")
             suggestions.append("Can I customize the timing?")
         
-        return suggestions
+        return suggestions[:3]
 
-    def format_suggestions(self, suggestions: List[str]) -> str:
+    def format_suggestions(self, suggestions: List[str], include_header: bool = True) -> str:
         """
         Format suggestions for display
+        DEPRECATED: Use get_raw_suggestions() instead for Flutter integration
         
         Args:
             suggestions: List of suggestion strings
+            include_header: Whether to include the header (default True)
             
         Returns:
             Formatted string with emoji bullets
@@ -270,8 +286,11 @@ class SuggestionEngine:
         if not suggestions:
             return ""
         
-        formatted = "\n\n💡 **You might also want to know:**\n"
-        for i, suggestion in enumerate(suggestions[:4], 1):
+        formatted = ""
+        if include_header:
+            formatted = "\n\n💡 **You might also want to know:**\n"
+        
+        for i, suggestion in enumerate(suggestions[:3], 1):
             formatted += f"{i}. {suggestion}\n"
         
         return formatted
@@ -284,6 +303,6 @@ class SuggestionEngine:
             category: 'wildlife', 'activities', or 'planning'
             
         Returns:
-            Category-specific suggestions
+            Category-specific suggestions (max 3)
         """
-        return self.category_suggestions.get(category, self.default_suggestions)
+        return self.category_suggestions.get(category, self.default_suggestions)[:3]
