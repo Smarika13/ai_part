@@ -381,7 +381,9 @@ class RAGService:
                 "- The One-horned Rhinoceros is a protected/endangered species found in Chitwan — NOT Nepal's national animal.\n"
                 "- IMPORTANT: Detect the language of the Question. If it is in Nepali, respond entirely in Nepali. If in English, respond in English.\n"
                 "- When responding in Nepali: write in warm, natural, conversational Nepali — like a friendly local guide (सरल र मैत्रीपूर्ण भाषामा बोल्नुस्). Avoid stiff, formal, or bureaucratic phrasing. Do NOT start with 'यस सन्दर्भमा' or similar robotic openers.\n"
-                "- Standard Nepali timing words: Morning=बिहान, Evening=साँझ. NEVER invent words like 'साँरै'.\n\n"
+                "- NEPALI GRAMMAR RULES: Use correct verb endings: 'गर्छ', 'हुन्छ', 'छ', 'हो', 'गर्दछ'. NEVER use 'आएपको', 'भनेपको', or any invented conjugations.\n"
+                "- NEPALI VOCABULARY: Use only real Nepali words. NEVER invent words like 'जीवस्पति', 'साँरै', 'ऐजाती'. Use correct spellings: 'महत्त्वपूर्ण' (not 'महत्पूर्ण'), 'संकटग्रस्त' (endangered), 'जङ्गल' (jungle).\n"
+                "- Standard Nepali timing words: Morning=बिहान, Evening=साँझ.\n\n"
                 "Context:\n{context}\n\n"
                 "Chat history:\n{chat_history}\n\n"
                 "Question: {question}\n\nAnswer:"
@@ -572,9 +574,11 @@ class RAGService:
         elif is_price:
             llm = self._make_llm(max_tokens=250, model="llama-3.1-8b-instant")
         else:
-            # Nepali responses need more tokens (Devanagari is denser)
-            llm = self._make_llm(max_tokens=250 if is_nepali_query else 150,
-                                 model="llama-3.1-8b-instant")
+            if is_nepali_query:
+                # 70b handles Nepali grammar and vocabulary much more accurately
+                llm = self._make_llm(max_tokens=300, model="llama-3.3-70b-versatile")
+            else:
+                llm = self._make_llm(max_tokens=150, model="llama-3.1-8b-instant")
 
         t_start = time.time()
         try:
