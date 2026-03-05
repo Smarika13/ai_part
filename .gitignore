@@ -37,5 +37,5 @@ dist/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Vector store (if you don't want to push embeddings)
-vector_store/
+# Vector store is committed so Render has it on deploy
+# vector_store/
