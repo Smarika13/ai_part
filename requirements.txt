@@ -6,16 +6,16 @@ pydantic==2.10.3
 python-dotenv==1.0.1
 python-multipart==0.0.9
 
-# ── LangChain ─────────────────────────────────────────────────────────────────
-langchain==0.3.7
-langchain-community==0.3.7
-langchain-core==0.3.63
-langchain-text-splitters==0.3.8
-langchain-groq==1.1.2
-langsmith==0.1.147
+# ── LangChain (unpinned — let pip resolve compatible versions) ─────────────────
+langchain
+langchain-community
+langchain-core
+langchain-text-splitters
+langchain-groq
+langsmith
 
 # ── LLM & Embeddings ──────────────────────────────────────────────────────────
-groq==0.37.1
+groq
 fastembed==0.7.4
 faiss-cpu==1.9.0
 onnxruntime==1.24.2
